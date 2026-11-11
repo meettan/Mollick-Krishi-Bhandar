@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create User - Mollick Krishi Bhandar</title>
+  <link rel="stylesheet" href="/static/sidebar_common.css">
+  <link rel="stylesheet" href="/static/user_pages.css">
+</head>
+<body>
+<div class="user-page create-user-page">
+  {% include 'sidebar.html' %}
+  <main class="user-main create-user-main">
+    <div class="create-user-wrap">
+      <div class="create-user-breadcrumb"><span>Administration</span><span class="crumb-sep">/</span><strong>Create User</strong></div>
+      <section class="user-card create-user-card">
+        <header class="create-user-header">
+          <div class="create-user-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9.5" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M19 8v6M16 11h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div><div class="create-user-eyebrow">USER ADMINISTRATION</div><h1 class="user-title">Create a new user</h1><p class="user-sub">Add a team member to the BENFED portal and assign their access level.</p></div>
+        </header>
+        {% if error %}<div class="user-alert" role="alert"><strong>Could not create user</strong><span>{{ error }}</span></div>{% endif %}
+        {% if success %}<div class="user-success" role="status">{{ success }}</div>{% endif %}
+        <form method="post" action="/create-user" id="create-user-form" autocomplete="off">
+          <div class="create-user-section-title"><span class="section-number">01</span><div><h2>Account details</h2><p>Set the sign-in information for this user.</p></div></div>
+          <div class="user-grid create-user-grid">
+            <div class="user-field create-user-field"><label for="username">Username <span class="required-star">*</span></label><input id="username" name="username" required maxlength="50" placeholder="e.g. rahul.sen" autocomplete="off"><small>Use a unique username the user can easily remember.</small></div>
+            <div class="user-field create-user-field"><label for="new-password">Password <span class="required-star">*</span></label><div class="password-control"><input id="new-password" type="password" name="password" required minlength="8" maxlength="255" pattern="(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s])\S{8,}" title="At least 8 characters, with a letter, a number, a special character, and no spaces." autocomplete="new-password" aria-describedby="password-help"><button type="button" class="password-toggle" id="toggle-password" aria-label="Show password">Show</button></div><small id="password-help">Use at least 8 characters, including a letter, a number and a special character. No spaces.</small>
+              <div class="password-rules" aria-live="polite"><span id="rule-length"><i></i> 8+ characters</span><span id="rule-letter"><i></i> One letter</span><span id="rule-number"><i></i> One number</span><span id="rule-special"><i></i> One special character</span></div>
+            </div>
+          </div>
+          <div class="create-user-divider"></div>
+          <div class="create-user-section-title"><span class="section-number">02</span><div><h2>Access level</h2><p>Choose the user's role. Menu permissions can be managed separately.</p></div></div>
+          <div class="user-grid create-user-grid role-grid">
+            <div class="user-field create-user-field"><label for="user-type">User type <span class="required-star">*</span></label><select id="user-type" name="user_type" required><option value="USER">USER — Standard user</option><option value="AGENT">AGENT — Agent access</option><option value="OPERATOR">OPERATOR — Operations access</option><option value="ADMIN">ADMIN — Administrator</option></select><small>Grant only the access needed for the user's responsibilities.</small></div>
+            <div class="access-note"><span class="access-note-mark">i</span><div><strong>Access can be adjusted later</strong><p>After creating the account, open User Management to configure the user's individual menu permissions.</p></div></div>
+          </div>
+          <footer class="create-user-actions"><a href="/user-management" class="cancel-user-btn">Cancel</a><button class="user-btn create-user-submit" type="submit"><span>Create user</span><span aria-hidden="true">→</span></button></footer>
+        </form>
+      </section>
+      <p class="create-user-footnote"><span aria-hidden="true">🔒</span> Account details should be shared securely with the new user.</p>
+    </div>
+  </main>
+</div>
+<script>
+if (window.lucide) window.lucide.createIcons();
+const form = document.getElementById('create-user-form');
+const passwordInput = document.getElementById('new-password');
+const toggle = document.getElementById('toggle-password');
+const rules = {
+  'rule-length': value => value.length >= 8,
+  'rule-letter': value => /[A-Za-z]/.test(value),
+  'rule-number': value => /[0-9]/.test(value),
+  'rule-special': value => /[^A-Za-z0-9\s]/.test(value) && !/\s/.test(value)
+};
+function updatePasswordRules() {
+  const value = passwordInput.value;
+  Object.entries(rules).forEach(([id, test]) => {
+    const item = document.getElementById(id);
+    item.classList.toggle('is-valid', test(value));
+    item.classList.toggle('is-invalid', value.length > 0 && !test(value));
+  });
+  passwordInput.setCustomValidity('');
+}
+passwordInput.addEventListener('input', updatePasswordRules);
+toggle.addEventListener('click', () => {
+  const show = passwordInput.type === 'password';
+  passwordInput.type = show ? 'text' : 'password';
+  toggle.textContent = show ? 'Hide' : 'Show';
+  toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+  passwordInput.focus();
+});
+form.addEventListener('submit', event => {
+  const value = passwordInput.value;
+  const valid = value.length >= 8 && /[A-Za-z]/.test(value) && /[0-9]/.test(value) && /[^A-Za-z0-9\s]/.test(value) && !/\s/.test(value);
+  if (!valid) {
+    event.preventDefault();
+    passwordInput.setCustomValidity('Use at least 8 characters, including a letter, a number, and a special character. Do not include spaces.');
+    passwordInput.reportValidity();
+  } else passwordInput.setCustomValidity('');
+});
+</script>
+</body></html>

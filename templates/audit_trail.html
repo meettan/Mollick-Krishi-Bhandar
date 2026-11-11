@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit Trail | Mollick Krishi Bhandar</title>
+  <link rel="stylesheet" href="/static/dashboard.css?v=11">
+  <link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    .audit-wrap{padding:24px}.audit-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:20px}.audit-heading h1{margin:0 0 6px;font-size:26px;color:#111827}.audit-heading p{margin:0;color:#6b7280}.audit-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(15,23,42,.04)}.audit-filters{display:flex;gap:10px;align-items:end;flex-wrap:wrap;padding:16px 18px;border-bottom:1px solid #e5e7eb}.audit-filters label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:#4b5563}.audit-filters input{padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;font:inherit;color:#111827}.audit-btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:8px;padding:10px 13px;background:#2563eb;color:#fff;text-decoration:none;font-weight:700;cursor:pointer}.audit-btn.secondary{background:#f3f4f6;color:#374151}.audit-meta{padding:12px 18px;color:#6b7280;font-size:12px}.audit-table-wrap{overflow:auto}.audit-table{width:100%;min-width:850px;border-collapse:collapse}.audit-table th{background:#f9fafb;text-align:left;padding:12px 14px;font-size:12px;color:#6b7280;border-bottom:1px solid #e5e7eb}.audit-table td{padding:12px 14px;font-size:13px;color:#374151;border-bottom:1px solid #f1f5f9;white-space:nowrap}.audit-table tr:last-child td{border-bottom:0}.audit-open{display:inline-block;padding:4px 8px;border-radius:999px;background:#fff7ed;color:#c2410c;font-size:11px;font-weight:700}.audit-closed{display:inline-block;padding:4px 8px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:11px;font-weight:700}.audit-error{margin:12px 18px;color:#b91c1c}.audit-empty{text-align:center;padding:30px!important;color:#6b7280!important}@media(max-width:700px){.audit-wrap{padding:14px}.audit-heading h1{font-size:22px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  {% include 'sidebar.html' %}
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><button class="menu-toggle" onclick="toggleSidebar()" aria-label="Open sidebar"><i data-lucide="menu"></i></button><div class="breadcrumb"><span>Mollick Krishi Bhandar</span><i data-lucide="chevron-right"></i><strong>Audit Trail</strong></div></div>
+      <div class="topbar-right"><span>{{ username }}</span></div>
+    </header>
+    <section class="audit-wrap">
+      <div class="audit-heading"><div><h1>Audit Trail</h1><p>Review login time, user ID, terminal/IP address, and logout time.</p></div></div>
+      <div class="audit-card">
+        <form class="audit-filters" method="get" action="/audit-trail">
+          <label>User ID<input name="user" value="{{ user_filter }}" placeholder="Search user ID"></label>
+          <label>Login from<input type="date" name="date_from" value="{{ date_from }}"></label>
+          <label>Login to<input type="date" name="date_to" value="{{ date_to }}"></label>
+          <button class="audit-btn" type="submit">Filter</button>
+          <a class="audit-btn secondary" href="/audit-trail">Clear</a>
+          <a class="audit-btn" href="/audit-trail/export?user={{ user_filter|urlencode }}&date_from={{ date_from|urlencode }}&date_to={{ date_to|urlencode }}">Export CSV</a>
+        </form>
+        {% if error %}<p class="audit-error">{{ error }}</p>{% endif %}
+        <div class="audit-meta">Showing up to 1,000 latest login sessions.</div>
+        <div class="audit-table-wrap"><table class="audit-table">
+          <thead><tr><th>ID</th><th>USER ID</th><th>TERMINAL / IP</th><th>LOGIN DATE &amp; TIME</th><th>LOGOUT DATE &amp; TIME</th><th>DURATION (MIN)</th><th>STATUS</th></tr></thead>
+          <tbody>
+          {% for row in rows %}
+            <tr><td>{{ row.id }}</td><td>{{ row.user_id }}</td><td>{{ row.terminal_name }}</td><td>{{ row.login_dt.strftime('%d-%m-%Y %H:%M:%S') if row.login_dt else '' }}</td><td>{{ row.logout.strftime('%d-%m-%Y %H:%M:%S') if row.logout else '—' }}</td><td>{{ row.duration_minutes if row.duration_minutes is not none else '—' }}</td><td>{% if row.logout %}<span class="audit-closed">Logged out</span>{% else %}<span class="audit-open">Logout not recorded</span>{% endif %}</td></tr>
+          {% else %}<tr><td class="audit-empty" colspan="7">No audit trail records found.</td></tr>{% endfor %}
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>if(window.lucide)window.lucide.createIcons();</script>
+</body>
+</html>

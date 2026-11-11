@@ -1,0 +1,21 @@
+The previous Internal Server Error on Add Product was caused by the Product Master page/templates not being present in the running project.
+
+This package adds:
+app/masters/product_master.py
+templates/masters/product_list.html
+templates/masters/product_form.html
+static/product_master.css
+
+It also updates app/main.py to register the Product Master router.
+
+Database:
+localhost / root / blank password / python_login
+Table:
+mm_product
+
+Run:
+C:\Users\Admin\AppData\Local\Programs\Python\Python310\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8080
+
+Open:
+http://localhost:8080/product
+Then click Add Product.

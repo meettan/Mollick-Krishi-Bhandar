@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Monitoring | Mollick Krishi Bhandar</title>
+  <link rel="stylesheet" href="/static/dashboard.css?v=11">
+  <link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    .monitor-wrap { padding: 24px; }
+    .monitor-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+    .monitor-heading h1 { margin:0 0 6px; font-size:26px; color:#111827; }
+    .monitor-heading p { margin:0; color:#6b7280; }
+    .monitor-card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; overflow:hidden; box-shadow:0 4px 16px rgba(15,23,42,.04); }
+    .monitor-card-top { padding:16px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; border-bottom:1px solid #e5e7eb; flex-wrap:wrap; }
+    .monitor-card-top strong { color:#111827; font-size:16px; }
+    .monitor-meta { color:#6b7280; font-size:12px; margin-top:4px; }
+    .monitor-pill { display:inline-flex; align-items:center; gap:7px; padding:6px 10px; border-radius:999px; background:#ecfdf5; color:#047857; font-size:12px; font-weight:700; }
+    .monitor-dot { width:7px; height:7px; border-radius:50%; background:#10b981; display:inline-block; }
+    .monitor-table-wrap { overflow-x:auto; }
+    .monitor-table { width:100%; border-collapse:collapse; min-width:720px; }
+    .monitor-table th { text-align:left; font-size:12px; color:#6b7280; font-weight:700; background:#f9fafb; padding:13px 18px; border-bottom:1px solid #e5e7eb; }
+    .monitor-table td { padding:15px 18px; color:#374151; font-size:14px; border-bottom:1px solid #f1f5f9; }
+    .monitor-table tbody tr:last-child td { border-bottom:0; }
+    .monitor-user { display:flex; align-items:center; gap:10px; }
+    .monitor-avatar { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#eff6ff; color:#2563eb; font-weight:700; }
+    .monitor-username { color:#111827; font-weight:700; }
+    .monitor-role { display:inline-block; padding:4px 8px; border-radius:7px; background:#f3f4f6; color:#4b5563; font-size:11px; font-weight:700; }
+    .monitor-status { display:inline-flex; align-items:center; gap:6px; color:#047857; font-weight:700; font-size:12px; }
+    .monitor-empty { padding:44px 20px; text-align:center; color:#6b7280; }
+    .monitor-empty i { display:block; margin:0 auto 12px; width:30px; height:30px; }
+    .monitor-refresh { border:0; border-radius:9px; padding:10px 14px; background:#2563eb; color:#fff; font-weight:700; cursor:pointer; }
+    .monitor-refresh:hover { background:#1d4ed8; }
+    .monitor-error { color:#b91c1c; font-size:13px; }
+    @media(max-width:700px) { .monitor-wrap {padding:16px;} .monitor-heading h1 {font-size:22px;} }
+  </style>
+</head>
+<body>
+<div class="app">
+  {% include 'sidebar.html' %}
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Open sidebar"><i data-lucide="menu"></i></button>
+        <div class="breadcrumb"><span>Mollick Krishi Bhandar</span><i data-lucide="chevron-right"></i><strong>Admin Monitoring</strong></div>
+      </div>
+      <div class="topbar-right"><span>{{ username }}</span></div>
+    </header>
+
+    <section class="monitor-wrap">
+      <div class="monitor-heading">
+        <div>
+          <h1>Admin Monitoring</h1>
+          <p>View other users currently signed in to the system.</p>
+        </div>
+        <button class="monitor-refresh" id="refresh-sessions" type="button"><i data-lucide="refresh-cw" style="width:15px;height:15px;vertical-align:middle;margin-right:5px"></i>Refresh now</button>
+      </div>
+
+      <div class="monitor-card">
+        <div class="monitor-card-top">
+          <div>
+            <strong>Current active sessions</strong>
+            <div class="monitor-meta" id="last-updated">Loading sessions…</div>
+          </div>
+          <span class="monitor-pill"><span class="monitor-dot"></span><span id="online-count">0 online</span></span>
+        </div>
+        <div class="monitor-table-wrap">
+          <table class="monitor-table">
+            <thead><tr><th>USER</th><th>ROLE</th><th>LOGIN TIME</th><th>LAST ACTIVE</th><th>STATUS</th></tr></thead>
+            <tbody id="session-rows">
+              <tr><td colspan="5" class="monitor-empty">Loading active users…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="monitor-meta" style="margin-top:12px">Online means the browser has sent a heartbeat within the last 2 minutes. This page refreshes automatically every 15 seconds. Your own user account is excluded.</p>
+      <p class="monitor-error" id="monitor-error" role="status"></p>
+    </section>
+  </main>
+</div>
+<script>
+(function () {
+  const tbody = document.getElementById("session-rows");
+  const count = document.getElementById("online-count");
+  const updated = document.getElementById("last-updated");
+  const errorBox = document.getElementById("monitor-error");
+  let running = false;
+
+  function cell(text) {
+    const td = document.createElement("td");
+    td.textContent = text || "—";
+    return td;
+  }
+
+  function render(users) {
+    tbody.replaceChildren();
+    count.textContent = users.length + (users.length === 1 ? " online" : " online");
+    if (!users.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 5;
+      td.className = "monitor-empty";
+      const icon = document.createElement("i");
+      icon.setAttribute("data-lucide", "users");
+      const text = document.createElement("div");
+      text.textContent = "No other users are currently online.";
+      td.appendChild(icon);
+      td.appendChild(text);
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
+
+    users.forEach(function (user) {
+      const tr = document.createElement("tr");
+
+      const userCell = document.createElement("td");
+      const userBox = document.createElement("div");
+      userBox.className = "monitor-user";
+      const avatar = document.createElement("div");
+      avatar.className = "monitor-avatar";
+      avatar.textContent = (user.username || "U").trim().charAt(0).toUpperCase();
+      const name = document.createElement("div");
+      name.className = "monitor-username";
+      name.textContent = user.username || "User";
+      userBox.appendChild(avatar);
+      userBox.appendChild(name);
+      userCell.appendChild(userBox);
+      tr.appendChild(userCell);
+
+      const roleCell = cell(user.user_type);
+      const role = document.createElement("span");
+      role.className = "monitor-role";
+      role.textContent = user.user_type || "USER";
+      roleCell.replaceChildren(role);
+      tr.appendChild(roleCell);
+      tr.appendChild(cell(user.signed_in_at));
+      tr.appendChild(cell(user.last_seen));
+
+      const statusCell = document.createElement("td");
+      const status = document.createElement("span");
+      status.className = "monitor-status";
+      const dot = document.createElement("span");
+      dot.className = "monitor-dot";
+      status.appendChild(dot);
+      status.appendChild(document.createTextNode("Online"));
+      statusCell.appendChild(status);
+      tr.appendChild(statusCell);
+
+      tbody.appendChild(tr);
+    });
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  async function loadSessions() {
+    if (running) return;
+    running = true;
+    errorBox.textContent = "";
+    try {
+      const response = await fetch("/admin-monitoring/active-sessions", {
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {"Accept": "application/json"}
+      });
+      if (response.status === 401) {
+        window.location.href = "/";
+        return;
+      }
+      if (response.status === 403) {
+        errorBox.textContent = "Administrator access is required.";
+        return;
+      }
+      if (!response.ok) throw new Error("Server returned " + response.status);
+      const data = await response.json();
+      render(Array.isArray(data.users) ? data.users : []);
+      updated.textContent = "Updated at " + new Date().toLocaleTimeString();
+    } catch (e) {
+      errorBox.textContent = "Could not refresh active sessions. Please try again.";
+    } finally {
+      running = false;
+    }
+  }
+
+  document.getElementById("refresh-sessions").addEventListener("click", loadSessions);
+  loadSessions();
+  window.setInterval(loadSessions, 15000);
+  if (window.lucide) window.lucide.createIcons();
+})();
+</script>
+</body>
+</html>

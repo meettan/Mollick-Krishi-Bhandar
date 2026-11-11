@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mollick Krishi Bhandar | Management Portal</title>
+<style>
+*{box-sizing:border-box}
+:root{--green:#087a56;--green2:#0e9f70;--navy:#0e2b25;--ink:#16332b;--muted:#70827a;--line:#dfe9e4;--bg:#eef5f1}
+html,body{margin:0;min-height:100%;font-family:"Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{background:var(--bg)}
+.shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;background:radial-gradient(circle at 8% 15%,#d7eee4 0,transparent 28%),radial-gradient(circle at 92% 85%,#dceee6 0,transparent 26%),linear-gradient(135deg,#f5faf7,#e9f2ee)}
+.card{width:min(1060px,100%);min-height:620px;display:grid;grid-template-columns:46% 54%;background:#fff;border:1px solid rgba(14,43,37,.08);border-radius:28px;overflow:hidden;box-shadow:0 28px 75px rgba(21,61,49,.16)}
+.brand{position:relative;padding:58px 55px;background:linear-gradient(145deg,#0c3c31,#07553f 58%,#0a6e50);color:#fff;display:flex;flex-direction:column;overflow:hidden}
+.brand:before,.brand:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.1)}
+.brand:before{width:430px;height:430px;right:-235px;top:-170px}.brand:after{width:520px;height:520px;left:-300px;bottom:-350px}
+.logo{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.logo-mark{width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center;font-weight:900;font-size:24px}.logo-name{font-size:21px;font-weight:800;letter-spacing:2px}.logo-sub{font-size:11px;color:#b9d9ce;margin-top:4px;line-height:1.45;max-width:300px}
+.brand-content{position:relative;z-index:1;margin-top:76px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:2.5px;color:#9ee0c8}.brand h2{font-size:38px;line-height:1.08;margin:13px 0 16px;letter-spacing:-1.2px}.brand p{margin:0;color:#cbe5dd;line-height:1.65;font-size:14px;max-width:390px}.features{margin-top:36px;display:grid;gap:13px}.feature{display:flex;gap:12px;align-items:center;color:#e8f5f0;font-size:13px}.check{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);font-size:12px}.brand-foot{position:relative;z-index:1;margin-top:auto;color:#a9d0c3;font-size:10px;letter-spacing:.5px}
+.form-side{display:flex;align-items:center;justify-content:center;padding:54px}.form-wrap{width:min(380px,100%)}.form-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.portal{color:var(--green);font-size:10px;letter-spacing:2px;font-weight:900}.status{font-size:10px;color:#72837b;display:flex;align-items:center;gap:6px}.dot{width:7px;height:7px;background:#23a86f;border-radius:50%}
+h1{font-size:37px;letter-spacing:-1.3px;margin:0 0 8px;color:#153129}.intro{font-size:13px;color:var(--muted);margin:0 0 30px}
+.alert{background:#fff2f1;border:1px solid #f0ceca;color:#a12e26;border-radius:11px;padding:11px 13px;font-size:12px;margin-bottom:18px}
+label{display:block;font-size:11px;letter-spacing:1px;font-weight:800;color:#5b6d65;margin:0 0 8px}.input-wrap{height:54px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;background:#fbfdfc;transition:.2s;margin-bottom:19px}.input-wrap:focus-within{border-color:#62b398;box-shadow:0 0 0 4px rgba(8,122,86,.08);background:#fff}.ico{width:43px;text-align:center;color:#7d978d;font-size:14px}.input-wrap input{flex:1;border:0;outline:0;background:transparent;height:100%;font:inherit;font-size:14px;color:#1b352d;padding-right:12px}.input-wrap input::placeholder{color:#a0aaa6}.show{height:100%;padding:0 14px;border:0;background:transparent;color:var(--green);font-size:11px;font-weight:800;cursor:pointer}
+.signin{width:100%;height:55px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;font-size:14px;font-weight:800;letter-spacing:.2px;cursor:pointer;box-shadow:0 13px 25px rgba(8,122,86,.2);transition:.2s;margin-top:2px}.signin:hover{transform:translateY(-1px);box-shadow:0 16px 30px rgba(8,122,86,.25)}
+.meta{display:flex;align-items:center;justify-content:space-between;margin-top:19px;color:#89968f;font-size:10px}.secure{display:flex;gap:6px;align-items:center}.version{color:#a1aba7}
+@media(max-width:850px){.shell{padding:14px}.card{grid-template-columns:1fr;min-height:auto;border-radius:22px}.brand{padding:34px 30px;min-height:330px}.brand-content{margin-top:40px}.brand h2{font-size:30px}.features{margin-top:22px}.form-side{padding:36px 24px 42px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="card">
+    <section class="brand">
+      <div class="logo">
+        <div class="logo-mark">M</div>
+        <div><div class="logo-name">Mollick Krishi Bhandar</div><div class="logo-sub">The W.B.S. Co-operative Marketing Federation Ltd.</div></div>
+      </div>
+      <div class="brand-content">
+        <div class="eyebrow">MANAGEMENT PORTAL</div>
+        <h2>Welcome to M.K.B</h2>
+        <p>A secure workspace for fertilizer management, master data and operational reporting.</p>
+        <div class="features">
+          <div class="feature"><span class="check">✓</span><span>Centralized management</span></div>
+          <div class="feature"><span class="check">✓</span><span>Company, product &amp; district masters</span></div>
+          <div class="feature"><span class="check">✓</span><span>Sales &amp; purchase reporting</span></div>
+        </div>
+      </div>
+      <div class="brand-foot">Mollick Krishi Bhandar.</div>
+    </section>
+    <section class="form-side">
+      <div class="form-wrap">
+        <div class="form-top"><span class="portal">SECURE SIGN IN</span><span class="status"><span class="dot"></span>System online</span></div>
+        <h1>Sign in</h1>
+        <p class="intro">Enter your credentials to access the MKB management portal.</p>
+        {% if error %}<div class="alert">{{ error }}</div>{% endif %}
+        <form method="post" action="/login" id="loginForm">
+          <label for="username">USER ID</label>
+          <div class="input-wrap"><span class="ico">◉</span><input id="username" name="username" value="{{ username }}" type="text" placeholder="Enter User ID" autocomplete="username" required autofocus></div>
+          <label for="password">PASSWORD</label>
+          <div class="input-wrap"><span class="ico">●</span><input id="password" name="password" type="password" placeholder="Enter Password" autocomplete="current-password" required><button class="show" type="button" id="toggle">SHOW</button></div>
+          <button class="signin" id="signinBtn" type="submit">SIGN IN&nbsp;&nbsp; →</button>
+        </form>
+        <div class="meta"><span class="secure">🔒 Authorized users only</span><span class="version">MKB • Fertilizer Management System</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+<script>
+const p=document.getElementById('password'),t=document.getElementById('toggle'),f=document.getElementById('loginForm'),b=document.getElementById('signinBtn');
+t.addEventListener('click',()=>{const show=p.type==='password';p.type=show?'text':'password';t.textContent=show?'HIDE':'SHOW';});
+f.addEventListener('submit',()=>{b.disabled=true;b.textContent='SIGNING IN...';});
+</script>
+</body>
+</html>

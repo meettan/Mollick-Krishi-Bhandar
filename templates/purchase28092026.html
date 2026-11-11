@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Purchase Master</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f4f6f9;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100vh;
+            background: #1f2937;
+            color: white;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 18px 15px;
+            font-size: 19px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+        }
+
+        .sidebar a {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 11px 18px;
+            transition: .2s;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 11px 18px;
+            transition: none;
+            background: transparent;
+        }
+        
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: transparent;
+            color: #d1d5db;
+        }
+        .sidebar i {
+            width: 24px;
+        }
+
+        .main-content {
+            margin-left: 230px;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.10);
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .form-control,
+        .form-select {
+            height: 38px;
+            font-size: 14px;
+        }
+
+        textarea.form-control {
+            height: auto;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            border-color: #16a34a;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #1f2937;
+            color: white;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .amount-box {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .amount-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .amount-value {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-posted {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .table-responsive {
+            max-height: 500px;
+            overflow: auto;
+        }
+
+        @media(max-width: 900px) {
+
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-header {
+                font-size: 0;
+                text-align: center;
+            }
+
+            .sidebar a span {
+                display: none;
+            }
+
+            .sidebar a {
+                text-align: center;
+                padding: 13px 5px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+
+    </style>
+<link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<div class="sidebar">
+
+    <div class="sidebar-header">
+        BENFED
+    </div>
+
+    <a href="/dashboard">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <a href="/company">
+        <i class="bi bi-building"></i>
+        <span>Company Master</span>
+    </a>
+
+    <a href="/product">
+        <i class="bi bi-box-seam"></i>
+        <span>Product Master</span>
+    </a>
+
+    <a href="/sales-person">
+        <i class="bi bi-person-badge"></i>
+        <span>Sales Person</span>
+    </a>
+
+    <a href="/purchase" class="active">
+        <i class="bi bi-cart-plus"></i>
+        <span>Purchase</span>
+    </a>
+
+    <a href="/sales">
+        <i class="bi bi-cart-check"></i>
+        <span>Sales</span>
+    </a>
+
+    <hr class="border-secondary">
+
+    <a href="/">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+    </a>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<div class="main-content">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <div>
+            <div class="page-title">
+                <i class="bi bi-cart-plus"></i>
+                Purchase Master
+            </div>
+
+            <small class="text-muted">
+                Purchase / RO Entry
+            </small>
+        </div>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            onclick="newPurchase()">
+
+            <i class="bi bi-plus-lg"></i>
+            New Purchase
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         PURCHASE ENTRY
+    ================================================== -->
+
+    <div class="card mb-4">
+
+        <div class="card-header">
+
+            <i class="bi bi-pencil-square"></i>
+
+            {% if edit_mode %}
+                Edit Purchase
+            {% else %}
+                Purchase Entry
+            {% endif %}
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form
+                method="post"
+                action="/purchase/save"
+                id="purchaseForm">
+
+
+                <!-- HIDDEN ID -->
+
+                <input
+                    type="hidden"
+                    name="purchase_id"
+                    id="purchase_id"
+                    value="{{ purchase.id if purchase else '' }}">
+
+
+                <!-- ==========================================
+                     BASIC INFORMATION
+                =========================================== -->
+
+                <div class="row g-3">
+
+                    <!-- PURCHASE / RO NO -->
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">
+                            Purchase No / RO No
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="purchase_no"
+                            id="purchase_no"
+                            class="form-control"
+                            required
+                            value="{{ purchase.purchase_no if purchase else '' }}"
+                            placeholder="Enter Purchase / RO No">
+
+                    </div>
+
+
+                    <!-- COMPANY -->
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Company / Vendor
+                            <span class="required">*</span>
+                        </label>
+
+                        <select
+                            name="company_id"
+                            id="company_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+                                -- Select Company --
+                            </option>
+
+                            {% for company in companies %}
+
+                                <option
+                                    value="{{ company.id }}"
+                                    {% if purchase and purchase.company_id|int == company.id|int %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ company.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PURCHASE DATE -->
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Purchase Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="purchase_date"
+                            id="purchase_date"
+                            class="form-control"
+                            value="{{ purchase.purchase_date if purchase and purchase.purchase_date else '' }}">
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">
+                            Status
+                        </label>
+
+                        <select
+                            name="status"
+                            id="status"
+                            class="form-select">
+
+                            <option
+                                value="DRAFT"
+                                {% if not purchase or purchase.status == 'DRAFT' %}
+                                    selected
+                                {% endif %}
+                            >
+                                DRAFT
+                            </option>
+
+                            <option
+                                value="POSTED"
+                                {% if purchase and purchase.status == 'POSTED' %}
+                                    selected
+                                {% endif %}
+                            >
+                                POSTED
+                            </option>
+
+                            <option
+                                value="CANCELLED"
+                                {% if purchase and purchase.status == 'CANCELLED' %}
+                                    selected
+                                {% endif %}
+                            >
+                                CANCELLED
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PRODUCT -->
+
+                    <div class="col-md-5">
+
+                        <label class="form-label">
+                            Product
+                            <span class="required">*</span>
+                        </label>
+
+                        <select
+                            name="product_id"
+                            id="product_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+                                -- Select Product --
+                            </option>
+
+                            {% for product in products %}
+
+                                <option
+                                    value="{{ product.id }}"
+                                    {% if purchase and purchase.product_id|int == product.id|int %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ product.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- BATCH -->
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">
+                            Batch
+                        </label>
+
+                        <input
+                            type="text"
+                            name="batch_id"
+                            id="batch_id"
+                            class="form-control"
+                            value="{{ purchase.batch_id if purchase else '' }}"
+                            placeholder="Batch">
+
+                    </div>
+
+
+                    <!-- INVOICE NO -->
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Invoice No
+                        </label>
+
+                        <input
+                            type="text"
+                            name="invoice_no"
+                            id="invoice_no"
+                            class="form-control"
+                            value="{{ purchase.invoice_no if purchase else '' }}">
+
+                    </div>
+
+
+                    <!-- INVOICE DATE -->
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Invoice Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="invoice_date"
+                            id="invoice_date"
+                            class="form-control"
+                            value="{{ purchase.invoice_date if purchase and purchase.invoice_date else '' }}">
+
+                    </div>
+
+
+                    <!-- ======================================
+                         FINANCIAL INFORMATION
+                    ======================================= -->
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Qty
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.001"
+                            min="0"
+                            name="qty"
+                            id="qty"
+                            class="form-control text-end"
+                            value="{{ purchase.qty if purchase else '0' }}">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Unit Price
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            name="unit_price"
+                            id="unit_price"
+                            class="form-control text-end"
+                            value="{{ purchase.unit_price if purchase else '0' }}">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Discount
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            name="discount"
+                            id="discount"
+                            class="form-control text-end"
+                            value="{{ purchase.discount if purchase else '0' }}">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            GST Rate %
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            name="gst_rate"
+                            id="gst_rate"
+                            class="form-control text-end"
+                            value="{{ purchase.gst_rate if purchase else '0' }}">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Credit Period
+                        </label>
+
+                        <input
+                            type="number"
+                            min="0"
+                            name="credit_period"
+                            id="credit_period"
+                            class="form-control text-end"
+                            value="{{ purchase.credit_period if purchase else '0' }}"
+                            placeholder="Days">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Due Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="due_date"
+                            id="due_date"
+                            class="form-control"
+                            value="{{ purchase.due_date if purchase and purchase.due_date else '' }}">
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <label class="form-label">
+                            Paid Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            name="paid_amount"
+                            id="paid_amount"
+                            class="form-control text-end"
+                            value="{{ purchase.paid_amount if purchase else '0' }}">
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     CALCULATION SUMMARY
+                ================================================== -->
+
+                <div class="row g-3 mt-2">
+
+                    <div class="col-md-2">
+
+                        <div class="amount-box">
+
+                            <div class="amount-label">
+                                Gross Amount
+                            </div>
+
+                            <div
+                                class="amount-value"
+                                id="gross_display">
+                                0.00
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="amount-box">
+
+                            <div class="amount-label">
+                                Discount
+                            </div>
+
+                            <div
+                                class="amount-value"
+                                id="discount_display">
+                                0.00
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="amount-box">
+
+                            <div class="amount-label">
+                                Taxable Amount
+                            </div>
+
+                            <div
+                                class="amount-value"
+                                id="taxable_display">
+                                0.00
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="amount-box">
+
+                            <div class="amount-label">
+                                GST Amount
+                            </div>
+
+                            <div
+                                class="amount-value"
+                                id="gst_display">
+                                0.00
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="amount-box">
+
+                            <div class="amount-label">
+                                Net Amount
+                            </div>
+
+                            <div
+                                class="amount-value"
+                                id="net_display">
+                                0.00
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+
+                        <div class="amount-box">
+
+                            <div class="amount-label">
+                                Outstanding
+                            </div>
+
+                            <div
+                                class="amount-value"
+                                id="outstanding_display">
+                                0.00
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     BUTTONS
+                ================================================== -->
+
+                <div class="mt-4 d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success">
+
+                        <i class="bi bi-check-lg"></i>
+
+                        {% if edit_mode %}
+                            Update Purchase
+                        {% else %}
+                            Save Purchase
+                        {% endif %}
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="newPurchase()">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+
+                        Clear
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PURCHASE LIST
+    ====================================================== -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <span>
+                    <i class="bi bi-list-ul"></i>
+                    Purchase List
+                </span>
+
+                <input
+                    type="text"
+                    id="searchPurchase"
+                    class="form-control"
+                    style="width:260px;"
+                    placeholder="Search Purchase...">
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-bordered table-hover"
+                    id="purchaseTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Purchase / RO No</th>
+
+                            <th>Purchase Date</th>
+
+                            <th>Company / Vendor</th>
+
+                            <th>Product</th>
+
+                            <th>Batch</th>
+
+                            <th>Invoice No</th>
+
+                            <th class="text-end">
+                                Qty
+                            </th>
+
+                            <th class="text-end">
+                                Unit Price
+                            </th>
+
+                            <th class="text-end">
+                                Gross
+                            </th>
+
+                            <th class="text-end">
+                                GST
+                            </th>
+
+                            <th class="text-end">
+                                Net
+                            </th>
+
+                            <th class="text-end">
+                                Paid
+                            </th>
+
+                            <th class="text-end">
+                                Outstanding
+                            </th>
+
+                            <th>Status</th>
+
+                            <th style="width:120px;">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% if purchases %}
+
+                            {% for row in purchases %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ loop.index }}
+                                    </td>
+
+
+                                    <td>
+                                        <strong>
+                                            {{ row.purchase_no or '' }}
+                                        </strong>
+                                    </td>
+
+
+                                    <td>
+                                        {{ row.purchase_date or '' }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ row.company_name or '' }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ row.product_name or '' }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ row.batch_id or '' }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ row.invoice_no or '' }}
+                                    </td>
+
+
+                                    <td class="text-end">
+                                        {{ row.qty or 0 }}
+                                    </td>
+
+
+                                    <td class="text-end">
+                                        {{ "%.2f"|format(row.unit_price or 0) }}
+                                    </td>
+
+
+                                    <td class="text-end">
+                                        {{ "%.2f"|format(row.gross_amount or 0) }}
+                                    </td>
+
+
+                                    <td class="text-end">
+                                        {{ "%.2f"|format(row.gst_amount or 0) }}
+                                    </td>
+
+
+                                    <td class="text-end">
+                                        <strong>
+                                            {{ "%.2f"|format(row.net_amount or 0) }}
+                                        </strong>
+                                    </td>
+
+
+                                    <td class="text-end">
+                                        {{ "%.2f"|format(row.paid_amount or 0) }}
+                                    </td>
+
+
+                                    <td class="text-end">
+
+                                        <strong class="text-danger">
+                                            {{ "%.2f"|format(row.outstanding_amount or 0) }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if row.status == 'POSTED' %}
+
+                                            <span class="status-badge status-posted">
+                                                POSTED
+                                            </span>
+
+                                        {% elif row.status == 'CANCELLED' %}
+
+                                            <span class="status-badge status-cancelled">
+                                                CANCELLED
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge status-draft">
+                                                DRAFT
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <a
+                                            href="/purchase/edit/{{ row.id }}"
+                                            class="btn btn-sm btn-primary"
+                                            title="Edit">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+                                        <a
+                                            href="/purchase/delete/{{ row.id }}"
+                                            class="btn btn-sm btn-danger"
+                                            title="Delete"
+                                            onclick="return confirm('Are you sure you want to delete this purchase?');">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td
+                                    colspan="16"
+                                    class="text-center text-muted py-4">
+
+                                    No Purchase Found
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const companySelect =
+            document.getElementById("company_id");
+
+        const productSelect =
+            document.getElementById("product_id");
+
+
+        /* =================================================
+           COMPANY CHANGE
+        ================================================= */
+
+        companySelect.addEventListener(
+            "change",
+            function () {
+
+                const companyId =
+                    this.value;
+
+                productSelect.innerHTML =
+                    '<option value="">-- Select Product --</option>';
+
+
+                if (!companyId) {
+                    return;
+                }
+
+
+                fetch(
+                    "/purchase/api/products?company_id="
+                    + encodeURIComponent(companyId)
+                )
+
+                .then(function(response) {
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Product API Error"
+                        );
+                    }
+
+                    return response.json();
+
+                })
+
+                .then(function(data) {
+
+                    if (
+                        !data ||
+                        !data.success
+                    ) {
+                        return;
+                    }
+
+
+                    data.products.forEach(
+                        function(product) {
+
+                            const option =
+                                document.createElement("option");
+
+                            option.value =
+                                product.id;
+
+                            option.textContent =
+                                product.name;
+
+                            productSelect.appendChild(
+                                option
+                            );
+
+                        }
+                    );
+
+
+                    {% if purchase %}
+
+                        const selectedProduct =
+                            "{{ purchase.product_id }}";
+
+                        if (selectedProduct) {
+
+                            productSelect.value =
+                                selectedProduct;
+
+                        }
+
+                    {% endif %}
+
+                })
+
+                .catch(function(error) {
+
+                    console.error(
+                        error
+                    );
+
+                    alert(
+                        "Product list load korte problem hoyeche."
+                    );
+
+                });
+
+            }
+        );
+
+
+        /* ================================================
+           CALCULATION EVENTS
+        ================================================= */
+
+        const calculationFields = [
+
+            "qty",
+
+            "unit_price",
+
+            "discount",
+
+            "gst_rate",
+
+            "paid_amount"
+
+        ];
+
+
+        calculationFields.forEach(
+            function(fieldId) {
+
+                const element =
+                    document.getElementById(fieldId);
+
+                if (element) {
+
+                    element.addEventListener(
+                        "input",
+                        calculateAmounts
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CREDIT PERIOD
+        ================================================= */
+
+        const creditPeriod =
+            document.getElementById(
+                "credit_period"
+            );
+
+        const purchaseDate =
+            document.getElementById(
+                "purchase_date"
+            );
+
+        const dueDate =
+            document.getElementById(
+                "due_date"
+            );
+
+
+        creditPeriod.addEventListener(
+            "input",
+            calculateDueDate
+        );
+
+
+        purchaseDate.addEventListener(
+            "change",
+            calculateDueDate
+        );
+
+
+        /* =================================================
+           INITIAL CALCULATION
+        ================================================= */
+
+        calculateAmounts();
+
+        calculateDueDate();
+
+
+        /* =================================================
+           SEARCH
+        ================================================= */
+
+        const searchBox =
+            document.getElementById(
+                "searchPurchase"
+            );
+
+
+        searchBox.addEventListener(
+            "keyup",
+            function () {
+
+                const search =
+                    this.value.toLowerCase();
+
+                const rows =
+                    document.querySelectorAll(
+                        "#purchaseTable tbody tr"
+                    );
+
+
+                rows.forEach(
+                    function(row) {
+
+                        const text =
+                            row.textContent.toLowerCase();
+
+                        if (
+                            text.indexOf(search)
+                            !== -1
+                        ) {
+
+                            row.style.display = "";
+
+                        } else {
+
+                            row.style.display = "none";
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           EDIT MODE
+        ================================================= */
+
+        {% if purchase and purchase.company_id %}
+
+            companySelect.dispatchEvent(
+                new Event("change")
+            );
+
+        {% endif %}
+
+    }
+);
+
+
+/* =====================================================
+   CALCULATE AMOUNTS
+===================================================== */
+
+function calculateAmounts() {
+
+    const qty =
+        parseFloat(
+            document.getElementById("qty").value
+        ) || 0;
+
+
+    const unitPrice =
+        parseFloat(
+            document.getElementById("unit_price").value
+        ) || 0;
+
+
+    const discount =
+        parseFloat(
+            document.getElementById("discount").value
+        ) || 0;
+
+
+    const gstRate =
+        parseFloat(
+            document.getElementById("gst_rate").value
+        ) || 0;
+
+
+    const paid =
+        parseFloat(
+            document.getElementById("paid_amount").value
+        ) || 0;
+
+
+    /* Gross */
+
+    const gross =
+        qty * unitPrice;
+
+
+    /* Taxable */
+
+    let taxable =
+        gross - discount;
+
+
+    if (taxable < 0) {
+        taxable = 0;
+    }
+
+
+    /* GST */
+
+    const gst =
+        taxable * gstRate / 100;
+
+
+    /* Net */
+
+    const net =
+        taxable + gst;
+
+
+    /* Outstanding */
+
+    let outstanding =
+        net - paid;
+
+
+    if (outstanding < 0) {
+        outstanding = 0;
+    }
+
+
+    document.getElementById(
+        "gross_display"
+    ).innerText =
+        gross.toFixed(2);
+
+
+    document.getElementById(
+        "discount_display"
+    ).innerText =
+        discount.toFixed(2);
+
+
+    document.getElementById(
+        "taxable_display"
+    ).innerText =
+        taxable.toFixed(2);
+
+
+    document.getElementById(
+        "gst_display"
+    ).innerText =
+        gst.toFixed(2);
+
+
+    document.getElementById(
+        "net_display"
+    ).innerText =
+        net.toFixed(2);
+
+
+    document.getElementById(
+        "outstanding_display"
+    ).innerText =
+        outstanding.toFixed(2);
+
+}
+
+
+/* =====================================================
+   CALCULATE DUE DATE
+===================================================== */
+
+function calculateDueDate() {
+
+    const dateValue =
+        document.getElementById(
+            "purchase_date"
+        ).value;
+
+
+    const days =
+        parseInt(
+            document.getElementById(
+                "credit_period"
+            ).value
+        ) || 0;
+
+
+    if (!dateValue) {
+        return;
+    }
+
+
+    const date =
+        new Date(
+            dateValue + "T00:00:00"
+        );
+
+
+    date.setDate(
+        date.getDate() + days
+    );
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+
+    document.getElementById(
+        "due_date"
+    ).value =
+        year + "-" + month + "-" + day;
+
+}
+
+
+/* =====================================================
+   NEW PURCHASE
+===================================================== */
+
+function newPurchase() {
+
+    window.location.href =
+        "/purchase/add";
+
+}
+
+</script>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+</html>

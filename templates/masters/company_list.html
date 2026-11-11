@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mollick Krishi Bhandar | Company Master</title>
+    <link rel="stylesheet" href="/static/company_master.css?v=4">
+</head>
+<body>
+<div class="app-layout">
+    {% include 'sidebar.html' %}
+
+    <main class="main-content">
+        <header class="page-header">
+            <div>
+                <div class="eyebrow">MASTER DATA</div>
+                <h1>Company Master</h1>
+                <p>Manage company information and statutory details.</p>
+            </div>
+            <a href="/company/add" class="btn btn-primary">＋ Add Company</a>
+        </header>
+
+        {% if flash_message %}
+            <div class="alert {% if 'Unable' in flash_message or 'not found' in flash_message|lower or 'required' in flash_message|lower %}alert-error{% else %}alert-success{% endif %}">
+                {{ flash_message }}
+            </div>
+        {% endif %}
+
+        <section class="card toolbar-card">
+            <form method="get" action="/company" class="search-form">
+                <div class="search-box">
+                    <span class="search-icon">⌕</span>
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ q }}"
+                        placeholder="Search Company, GSTIN, PAN or Short Name..."
+                        autocomplete="off"
+                    >
+                </div>
+                <button type="submit" class="btn btn-secondary">Search</button>
+                {% if q %}
+                    <a href="/company" class="btn btn-light">Clear</a>
+                {% endif %}
+            </form>
+            <div class="record-count">{{ companies|length }} record{% if companies|length != 1 %}s{% endif %}</div>
+        </section>
+
+        <section class="card table-card">
+            <div class="card-header">
+                <div>
+                    <h2>Company List</h2>
+                    <p>Company ID, company name and GSTIN</p>
+                </div>
+                <a href="/company/add" class="btn btn-primary btn-small">＋ Add</a>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company ID</th>
+                            <th>Company Name</th>
+                            <th>GSTIN NO.</th>
+                            <th class="center">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in companies %}
+                            <tr>
+                                <td><span class="id-badge">{{ row.comp_id }}</span></td>
+                                <td>
+                                    <div class="company-name">{{ row.comp_name }}</div>
+                                    {% if row.short_name %}
+                                        <div class="company-short">{{ row.short_name }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.gst_no if row.gst_no else '—' }}</td>
+                                <td class="center">
+                                    <a href="/company/edit/{{ row.comp_id }}" class="edit-btn">✎ Edit</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="empty">No company records found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

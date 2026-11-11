@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BENFED | {% if mode == 'add' %}Add Product{% else %}Edit Product{% endif %}</title>
+<link rel="stylesheet" href="/static/product_master.css?v=2">
+<link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-logo">B</div><div><div class="brand-name">BENFED</div><div class="brand-sub">Management System</div></div></div>
+  <div class="menu-label">MAIN</div>
+<div class="menu-label">REPORTS</div><a href="#" class="menu-item"><span class="icon">↗</span>Purchase Report</a><a href="#" class="menu-item"><span class="icon">↘</span>Sale Report</a>
+  <div class="sidebar-footer"><div class="footer-title">BENFED</div>The W.B.S Co-Operative Marketing Federation Ltd.</div>
+</aside>
+<main class="main">
+<header class="topbar"><div><div class="breadcrumb">PRODUCT MASTER</div><h1>{% if mode == 'add' %}Add New Product{% else %}Edit Product{% endif %}</h1><p class="subtitle">{% if mode == 'add' %}Create a new product master record.{% else %}Update product information.{% endif %}</p></div><a href="/product" class="btn light">← Back to List</a></header>
+{% if flash %}<div class="alert {% if flash.type == 'error' %}alert-error{% else %}alert-success{% endif %}">{{ flash.message }}</div>{% endif %}
+<form method="post" action="{% if mode == 'add' %}/product/add{% else %}/product/edit/{{ product.PROD_ID }}{% endif %}">
+<section class="card form-card"><div class="card-header"><div><h2>Product Information</h2><p>Basic product and company details</p></div></div>
+<div class="form-grid">
+<div class="form-group"><label>Product ID</label><input value="{{ next_id }}" disabled></div>
+<div class="form-group"><label>Product Description <span class="required">*</span></label><input name="prod_desc" value="{{ product.PROD_DESC or '' }}" maxlength="250" required></div>
+<div class="form-group"><label>Company</label><select name="company"><option value="">-- Select Company --</option>{% for company in companies %}<option value="{{ company.comp_id }}" {% if product.COMPANY is not none and product.COMPANY|int == company.comp_id|int %}selected{% endif %}>{{ company.comp_name }}</option>{% endfor %}</select></div>
+<div class="form-group"><label>Product Type</label><input name="prod_type" value="{{ product.PROD_TYPE or '' }}" maxlength="100"></div>
+<div class="form-group"><label>Commodity ID</label><input type="number" name="commodity_id" value="{{ product.COMMODITY_ID if product.COMMODITY_ID is not none else '' }}"></div>
+<div class="form-group"><label>GST Rate (%)</label><input type="number" step="0.01" name="gst_rt" value="{{ product.GST_RT if product.GST_RT is not none else '' }}"></div>
+<div class="form-group"><label>HSN Code</label><input name="hsn_code" value="{{ product.HSN_CODE or '' }}" maxlength="30"></div>
+<div class="form-group"><label>Qty Per Bag</label><input type="number" step="0.001" name="qty_per_bag" value="{{ product.QTY_PER_BAG if product.QTY_PER_BAG is not none else '' }}"></div>
+<div class="form-group"><label>Unit</label><select name="unit">{% for item in unit_options %}<option value="{{ item.value }}" {% if product.unit is not none and product.unit|int == item.value|int %}selected{% endif %}>{{ item.value }} - {{ item.label }}</option>{% endfor %}</select></div>
+<div class="form-group"><label>Storage</label><select name="storage">{% for item in storage_options %}<option value="{{ item.value }}" {% if product.storage is not none and product.storage|string == item.value|string %}selected{% endif %}>{{ item.label }}</option>{% endfor %}</select></div>
+<div class="form-group"><label>Material Status</label><select name="mat_state">{% for item in state_options %}<option value="{{ item.value }}" {% if product.mat_state is not none and product.mat_state|int == item.value|int %}selected{% endif %}>{{ item.label }}</option>{% endfor %}</select></div>
+</div></section>
+<div class="form-actions"><a href="/product" class="btn light">Cancel</a><button class="btn primary" type="submit">{% if mode == 'add' %}Save Product{% else %}Update Product{% endif %}</button></div>
+</form></main></div>
+</body></html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Company Payment Report</title>
+<link href="/static/dashboard.css?v=11" rel="stylesheet">
+<link href="/static/sidebar_common.css?v=23" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body{margin:0;background:#f5f7fb;font-family:Arial,sans-serif}
+.main .wrap{padding:26px 28px;max-width:1600px;margin:auto}
+.report-panel{background:#fff;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 2px 10px #0001}
+.report-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.report-title h3{margin:0}
+.table-responsive{overflow-x:auto}
+table{font-size:13px}
+@media(max-width:900px){.main .wrap{padding:18px 12px}.report-title{align-items:flex-start;flex-direction:column}}
+@media print{.sidebar,.backdrop,.topbar,.no-print{display:none!important}.main{margin-left:0!important}.main .wrap{padding:0!important}}
+</style>
+</head>
+<body>
+<div class="app">
+{% include 'sidebar.html' %}
+<div class="backdrop" onclick="toggleSidebar()"></div>
+<main class="main">
+<div class="wrap">
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <h3 class="mb-0">Company Payment Report</h3>
+  </div>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <form method="get" action="/reports/company-payment/" class="row g-3 align-items-end" id="paymentReportFilter">
+        <div class="col-md-3">
+          <label class="form-label" for="financial_year">Financial Year</label>
+          <select class="form-select" id="financial_year" name="financial_year">
+            {% for fy in financial_year_options %}
+              <option value="{{ fy.value }}" data-start="{{ fy.start }}" data-end="{{ fy.end }}"
+                {% if financial_year == fy.value %}selected{% endif %}>{{ fy.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="from_date">From Date</label>
+          <input class="form-control" type="date" id="from_date" name="from_date"
+                 value="{{ from_date }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="to_date">To Date</label>
+          <input class="form-control" type="date" id="to_date" name="to_date"
+                 value="{{ to_date }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="company_id">Company</label>
+          <select class="form-select" id="company_id" name="company_id">
+            <option value="">All Companies</option>
+            {% for company in companies %}
+              <option value="{{ company.id }}"
+                {% if selected_company_id == company.id|string %}selected{% endif %}>
+                {{ company.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Show Report</button>
+          <a class="btn btn-secondary" href="/reports/company-payment/">Reset</a>
+        </div>
+      </form>
+      <div class="small text-muted mt-2">Selected financial year: {{ financial_year }} (1 April to 31 March). You can also enter a custom date range within this financial year.</div>
+    </div>
+  </div>
+
+  {% if rows %}
+    <div class="d-flex gap-2 mb-3 flex-wrap">
+      <a class="btn btn-success"
+         href="/reports/company-payment/export/excel?from_date={{ from_date }}&to_date={{ to_date }}&company_id={{ selected_company_id or '0' }}">
+        Export Excel
+      </a>
+      <a class="btn btn-danger"
+         href="/reports/company-payment/export/pdf?from_date={{ from_date }}&to_date={{ to_date }}&company_id={{ selected_company_id or '0' }}">
+        Export PDF
+      </a>
+    </div>
+  {% endif %}
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-striped table-sm align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Sl.</th><th>Payment Date</th><th>Company</th><th>Payment No.</th>
+            <th>Invoice No.</th><th>Purchase No.</th><th>Mode</th>
+            <th>Reference No.</th><th class="text-end">Amount</th><th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ row.payment_date.strftime('%d-%m-%Y') if row.payment_date else '' }}</td>
+            <td>{{ row.company_name }}</td>
+            <td>{{ row.payment_no }}</td>
+            <td>{{ row.invoice_no }}</td>
+            <td>{{ row.purchase_no }}</td>
+            <td>{{ row.payment_mode }}</td>
+            <td>{{ row.reference_no or '' }}</td>
+            <td class="text-end">{{ "%.2f"|format(row.paid_amount) }}</td>
+            <td>{{ row.remarks or '' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr class="table-secondary">
+            <th colspan="8" class="text-end">Grand Total</th>
+            <th class="text-end">{{ "%.2f"|format(grand_total) }}</th>
+            <th></th>
+          </tr>
+        </tfoot>
+      </table>
+      {% if not rows %}
+        <div class="text-center text-muted py-4">No company payments found for the selected period.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if company_totals %}
+  <div class="card shadow-sm">
+    <div class="card-header"><strong>Company-wise Payment Summary</strong></div>
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-sm mb-0">
+        <thead><tr><th>Company</th><th class="text-end">Total Payment</th></tr></thead>
+        <tbody>
+          {% for name, amount in company_totals %}
+          <tr><td>{{ name }}</td><td class="text-end">{{ "%.2f"|format(amount) }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<script>
+(function () {
+  const fy = document.getElementById("financial_year");
+  const from = document.getElementById("from_date");
+  const to = document.getElementById("to_date");
+  if (fy && from && to) {
+    fy.addEventListener("change", function () {
+      const option = fy.options[fy.selectedIndex];
+      from.value = option.dataset.start || "";
+      to.value = option.dataset.end || "";
+    });
+    from.addEventListener("change", function () {
+      to.min = from.value;
+    });
+    to.addEventListener("change", function () {
+      from.max = to.value;
+    });
+  }
+})();
+</script>

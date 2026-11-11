@@ -1,0 +1,33 @@
+Mollick Krishi Bhandar - PER-USER MENU PERMISSIONS
+
+What changed
+------------
+1. Admin can open Administration > User Management > Manage Menus.
+2. Each user has checkboxes for individual masters, transactions and reports.
+3. Save Permissions stores an explicit allow/deny choice for each menu in the
+   user_menu_permissions MySQL table.
+4. The sidebar shows only allowed menu items for that user.
+5. FastAPI middleware checks the same permissions on each protected URL, so
+   hiding a menu is not the only protection.
+6. Dashboard and My Profile remain available to every logged-in user.
+7. If no custom menu permissions have been saved for a user, the existing
+   role defaults (ADMIN, AGENT, OPERATOR, USER) continue to apply.
+
+Setup
+-----
+The user_menu_permissions table is created automatically by ensure_login_database
+when the app starts. Back up your project and database before replacing files.
+
+Usage
+-----
+1. Sign in with an ADMIN account.
+2. Open User Management.
+3. Click Manage Menus beside the target user.
+4. Check/uncheck the menus and click Save Permissions.
+5. Ask the user to log out and log in again, or refresh the page, to see the
+   updated sidebar.
+
+Security note
+-------------
+Admin-only actions such as Create User and User Management remain restricted
+by server-side admin checks. An ADMIN account always has full menu access.

@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Mollick Krishi Bhandar - Customer Ledger</title>
+
+<link rel="stylesheet" href="/static/dashboard.css?v=11">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+
+<style>
+:root {
+    --benfed-blue: #174477;
+    --benfed-dark: #10345b;
+    --benfed-light: #edf4fb;
+    --benfed-border: #d7e0ea;
+}
+
+.main {
+    padding: 28px 30px !important;
+}
+
+.ledger {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ledger th {
+    white-space: nowrap;
+    background: #edf3f9;
+    color: var(--benfed-dark);
+    font-size: 12px;
+    padding: 11px 9px;
+}
+
+.ledger td {
+    vertical-align: middle;
+    font-size: 12px;
+    padding: 9px;
+}
+
+.amount {
+    font-variant-numeric: tabular-nums;
+}
+
+.summary-box {
+    border: 1px solid var(--benfed-border);
+    border-radius: 9px;
+    padding: 15px;
+    background: #fff;
+    height: 100%;
+}
+
+.summary-label {
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.summary-value {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--benfed-dark);
+}
+
+.print-header,
+.print-customer,
+.print-signatures,
+.print-footer {
+    display: none;
+}
+
+.btn-print {
+    background: var(--benfed-blue);
+    color: white;
+    border: none;
+}
+
+.btn-print:hover {
+    background: var(--benfed-dark);
+    color: white;
+}
+
+/* PROFESSIONAL PRINT DESIGN */
+
+@media print {
+
+    @page {
+        size: A4 landscape;
+        margin: 12mm 10mm 15mm 10mm;
+    }
+
+    body {
+        background: white !important;
+        color: #222 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 10px !important;
+    }
+
+    .sidebar,
+    .backdrop,
+    nav,
+    header,
+    .no-print,
+    button,
+    form,
+    .btn {
+        display: none !important;
+    }
+
+    .app,
+    .main {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .print-header {
+        display: block !important;
+        text-align: center;
+        position: relative;
+        padding-bottom: 12px;
+        border-bottom: 3px solid var(--benfed-blue);
+        margin-bottom: 15px;
+    }
+
+    .logo-placeholder {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 65px;
+        height: 55px;
+        border: 1px dashed #9ca3af;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: #64748b;
+    }
+
+    .print-header h1 {
+        font-size: 25px;
+        font-weight: 800;
+        color: var(--benfed-blue);
+        margin: 0;
+        letter-spacing: 2px;
+    }
+
+    .print-header h2 {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 5px 0 3px;
+        color: #222;
+    }
+
+    .print-header p {
+        font-size: 10px;
+        margin: 0;
+        color: #64748b;
+    }
+
+    .print-customer {
+        display: block !important;
+        border: 1px solid var(--benfed-border);
+        padding: 11px 14px;
+        margin-bottom: 12px;
+        border-radius: 5px;
+    }
+
+    .section-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--benfed-blue);
+        margin-bottom: 9px;
+        text-transform: uppercase;
+    }
+
+    .customer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 9px 20px;
+    }
+
+    .customer-field {
+        font-size: 10px;
+    }
+
+    .customer-field strong {
+        color: #222;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+        margin-bottom: 10px !important;
+    }
+
+    .card-body {
+        padding: 0 !important;
+    }
+
+    .card-header {
+        display: none !important;
+    }
+
+    .summary-box {
+        border: 1px solid var(--benfed-border) !important;
+        border-radius: 5px !important;
+        padding: 10px !important;
+        background: #f8fafc !important;
+        height: auto !important;
+        min-height: 55px;
+    }
+
+    .summary-label {
+        font-size: 9px !important;
+        color: #555 !important;
+        margin-bottom: 5px !important;
+    }
+
+    .summary-value {
+        font-size: 15px !important;
+        color: var(--benfed-blue) !important;
+    }
+
+    .table-responsive {
+        overflow: visible !important;
+    }
+
+    .ledger {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    .ledger thead {
+        display: table-header-group !important;
+    }
+
+    .ledger tfoot {
+        display: table-footer-group !important;
+    }
+
+    .ledger th {
+        background: var(--benfed-blue) !important;
+        color: white !important;
+        border: 1px solid var(--benfed-blue) !important;
+        padding: 9px 6px !important;
+        font-size: 9px !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .ledger td {
+        border: 1px solid #d5dde7 !important;
+        padding: 7px 6px !important;
+        font-size: 9px !important;
+        color: #222 !important;
+        background: white !important;
+    }
+
+    .ledger tr {
+        page-break-inside: avoid !important;
+    }
+
+    .ledger .table-light td {
+        background: #edf4fb !important;
+        font-weight: bold !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .badge {
+        color: #222 !important;
+        background: white !important;
+        border: 1px solid #999 !important;
+        font-size: 8px !important;
+    }
+
+    .print-signatures {
+        display: flex !important;
+        justify-content: space-between;
+        margin-top: 38px;
+        page-break-inside: avoid;
+    }
+
+    .signature-box {
+        width: 220px;
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid #333;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .print-footer {
+        display: block !important;
+        text-align: center;
+        border-top: 1px solid #d5dde7;
+        padding-top: 7px;
+        margin-top: 20px;
+        font-size: 8px;
+        color: #64748b;
+    }
+
+    .closing-highlight {
+        color: var(--benfed-blue) !important;
+        font-weight: 800 !important;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: black !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+{% include 'sidebar.html' %}
+
+<div class="main">
+
+    <!-- SCREEN HEADING -->
+
+    <div class="mb-3 no-print">
+        <h3 class="mb-1">
+            <i class="bi bi-journal-text"></i>
+            Customer Ledger
+        </h3>
+
+        <div class="text-muted">
+            Customer-wise opening balance, sales invoices and money received
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger no-print">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- FILTER SECTION -->
+
+    <div class="card shadow-sm mb-3 no-print">
+        <div class="card-body">
+
+            <form method="get"
+                  action="/customer-ledger"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-3">
+                    <label class="form-label">Customer</label>
+
+                    <select class="form-select"
+                            name="customer_id"
+                            required>
+
+                        <option value="">Select Customer</option>
+
+                        {% for c in customers %}
+                        <option value="{{ c.id }}"
+                        {% if customer_id|string == c.id|string %}
+                        selected
+                        {% endif %}>
+                            {{ c.customer_code }} - {{ c.customer_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Financial Year</label>
+                    <select class="form-select" name="financial_year" id="financial_year" required>
+                        {% for fy in financial_years %}
+                        <option value="{{ fy.value }}" {% if financial_year == fy.value %}selected{% endif %}>{{ fy.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">From Date</label>
+
+                    <input type="date"
+                           name="from_date"
+                           class="form-control"
+                           value="{{ from_date }}">
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">To Date</label>
+
+                    <input type="date"
+                           name="to_date"
+                           class="form-control"
+                           value="{{ to_date }}">
+                </div>
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                        View Ledger
+                    </button>
+
+                    <a href="/customer-ledger"
+                       class="btn btn-outline-secondary">
+                        Reset
+                    </a>
+
+                </div>
+
+            </form>
+            <div class="form-text mt-2">Opening balance is fetched from customer_op for 1 April of the selected financial year. Date filters can be narrowed within that year.</div>
+
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const fySelect = document.getElementById('financial_year');
+        if (!fySelect) return;
+        fySelect.addEventListener('change', function () {
+            const startYear = parseInt(this.value.split('-')[0], 10);
+            if (!startYear) return;
+            document.querySelector('input[name="from_date"]').value = startYear + '-04-01';
+            document.querySelector('input[name="to_date"]').value = (startYear + 1) + '-03-31';
+        });
+    })();
+    </script>
+
+    {% if selected_customer %}
+
+    <!-- PRINT HEADER -->
+
+    <div class="print-header">
+
+        <div class="logo-placeholder">
+            Mollick Krishi Bhandar LOGO
+        </div>
+
+        <h1>Mollick Krishi Bhandar</h1>
+
+        <h2>CUSTOMER ACCOUNT STATEMENT</h2>
+
+        <p>Customer Ledger</p>
+
+    </div>
+
+    <!-- CUSTOMER INFORMATION -->
+
+    <div class="print-customer">
+
+        <div class="section-title">
+            Customer Information
+        </div>
+
+        <div class="customer-grid">
+
+            <div class="customer-field">
+                Customer Code:
+                <strong>{{ selected_customer.customer_code }}</strong>
+            </div>
+
+            <div class="customer-field">
+                Customer Name:
+                <strong>{{ selected_customer.customer_name }}</strong>
+            </div>
+
+            <div class="customer-field">
+                Statement Period:
+                <strong>
+                    {{ from_date if from_date else 'Beginning' }}
+                    to
+                    {{ to_date if to_date else 'Current' }}
+                </strong>
+            </div>
+
+            <div class="customer-field">
+                Mobile:
+                <strong>{{ selected_customer.mobile or '-' }}</strong>
+            </div>
+
+            <div class="customer-field">
+                GST Number:
+                <strong>{{ selected_customer.gst_no or '-' }}</strong>
+            </div>
+
+            <div class="customer-field">
+                Print Date:
+                <strong id="printDate"></strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ACCOUNT SUMMARY: DEBIT AND CREDIT SHOWN IN SEPARATE BOXES -->
+
+    <div class="section-title no-print">Account Summary</div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-3 col-6">
+            <div class="summary-box">
+                <div class="summary-label">Opening Balance - Debit (Dr)</div>
+                <div class="summary-value amount">{{ '%.2f'|format(summary.opening_debit) }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-box">
+                <div class="summary-label">Opening Balance - Credit (Cr)</div>
+                <div class="summary-value amount">{{ '%.2f'|format(summary.opening_credit) }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-box">
+                <div class="summary-label">Total Sales / Debit</div>
+                <div class="summary-value amount">{{ '%.2f'|format(summary.debit) }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-box">
+                <div class="summary-label">Total Received / Credit</div>
+                <div class="summary-value amount">{{ '%.2f'|format(summary.credit) }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-box">
+                <div class="summary-label">Closing Balance - Debit (Dr)</div>
+                <div class="summary-value amount closing-highlight">{{ '%.2f'|format(summary.closing_debit) }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-box">
+                <div class="summary-label">Closing Balance - Credit (Cr)</div>
+                <div class="summary-value amount closing-highlight">{{ '%.2f'|format(summary.closing_credit) }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEDGER TABLE -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header fw-semibold no-print">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <span>Ledger Transactions</span>
+
+                <button type="button"
+                        onclick="printLedger()"
+                        class="btn btn-print btn-sm">
+
+                    <i class="bi bi-printer-fill"></i>
+                    Print Ledger
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover mb-0 ledger">
+
+                <thead>
+
+                    <tr>
+                        <th>Date</th>
+                        <th>Particulars</th>
+                        <th class="text-end">Debit (Dr)</th>
+                        <th class="text-end">Credit (Cr)</th>
+                        <th class="text-end">Balance Dr</th>
+                        <th class="text-end">Balance Cr</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <!-- OPENING BALANCE -->
+
+                    <tr class="table-light fw-semibold">
+
+                        <td colspan="2">
+                            Opening / Brought Forward Balance
+                        </td>
+
+                        <td class="text-end amount">{% if summary.opening_debit %}{{ '%.2f'|format(summary.opening_debit) }}{% else %}-{% endif %}</td>
+                        <td class="text-end amount">{% if summary.opening_credit %}{{ '%.2f'|format(summary.opening_credit) }}{% else %}-{% endif %}</td>
+
+                    </tr>
+
+                    <!-- TRANSACTIONS -->
+
+                    {% for r in rows %}
+
+                    <tr>
+
+                        <td>{{ r.txn_date }}</td>
+
+                        <td>
+                            {% if r.txn_type == 'SALE' %}
+                                <span class="badge text-bg-primary">SALE</span>
+                            {% else %}
+                                <span class="badge text-bg-success">RECOVERY</span>
+                            {% endif %}
+                            {{ r.description }}
+                            {% if r.reference_no %}<small class="text-muted">(Ref: {{ r.reference_no }})</small>{% endif %}
+                        </td>
+
+                        <td class="text-end amount">
+
+                            {% if r.debit %}
+                                {{ '%.2f'|format(r.debit) }}
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-end amount">
+
+                            {% if r.credit %}
+                                {{ '%.2f'|format(r.credit) }}
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-end amount fw-semibold">{% if r.balance_debit %}{{ '%.2f'|format(r.balance_debit) }}{% else %}-{% endif %}</td>
+                        <td class="text-end amount fw-semibold">{% if r.balance_credit %}{{ '%.2f'|format(r.balance_credit) }}{% else %}-{% endif %}</td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="6"
+                            class="text-center text-muted py-4">
+
+                            No transactions found for this customer and date range.
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    <!-- TOTAL -->
+
+                    <tr class="table-light fw-bold">
+
+                        <td colspan="2" class="text-end">
+                            PERIOD TOTAL / CLOSING
+                        </td>
+
+                        <td class="text-end amount">
+                            {{ '%.2f'|format(summary.debit) }}
+                        </td>
+
+                        <td class="text-end amount">
+                            {{ '%.2f'|format(summary.credit) }}
+                        </td>
+
+                        <td class="text-end amount closing-highlight">{% if summary.closing_debit %}{{ '%.2f'|format(summary.closing_debit) }}{% else %}-{% endif %}</td>
+                        <td class="text-end amount closing-highlight">{% if summary.closing_credit %}{{ '%.2f'|format(summary.closing_credit) }}{% else %}-{% endif %}</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- SIGNATURES -->
+
+    <div class="print-signatures">
+
+        <div class="signature-box">
+            Prepared By
+        </div>
+
+        <div class="signature-box">
+            Checked By
+        </div>
+
+        <div class="signature-box">
+            Authorized Signatory
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="print-footer">
+
+        This is a computer-generated customer account statement.
+
+        <br>
+
+        Mollick Krishi Bhandar | Customer Ledger
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-info no-print">
+        Select a customer to view the ledger.
+    </div>
+
+    {% endif %}
+
+</div>
+</div>
+
+<script>
+
+function toggleSidebar() {
+
+    document.getElementById('sidebar')
+        ?.classList.toggle('open');
+
+    document.querySelector('.backdrop')
+        ?.classList.toggle('show');
+
+}
+
+function printLedger() {
+
+    const dateElement = document.getElementById('printDate');
+
+    if (dateElement) {
+
+        dateElement.textContent =
+            new Date().toLocaleDateString('en-IN');
+
+    }
+
+    window.print();
+
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
+});
+
+</script>
+
+</body>
+</html>

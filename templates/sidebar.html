@@ -1,0 +1,122 @@
+<link rel="stylesheet" href="/static/dashboard.css?v=11">
+<link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-badge">M</div>
+    <div class="brand-copy">
+      <div class="brand-name">Mollick Krishi Bhandar</div>
+      <div class="brand-sub">Management Portal</div>
+    </div>
+    <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close sidebar">×</button>
+  </div>
+
+  <div class="menu-section main-section">
+    <div class="menu-title">MAIN</div>
+    <nav>
+      <a href="/dashboard" class="menu-item" data-path="/dashboard">
+        <span class="menu-icon"><i data-lucide="layout-dashboard"></i></span><span>Dashboard</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="menu-section collapsible-section collapsed" data-section="masters">
+    <button type="button" class="section-toggle" aria-expanded="false">
+      <span class="menu-title">MASTERS</span><span class="section-chevron">⌄</span>
+    </button>
+    <nav class="section-nav">
+      {% if user_type == "ADMIN" or "company" in allowed_menus %}<a href="/company" class="menu-item" data-path="/company"><span class="menu-icon"><i data-lucide="building-2"></i></span><span>Company Master</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "product" in allowed_menus %}<a href="/product" class="menu-item" data-path="/product"><span class="menu-icon"><i data-lucide="package"></i></span><span>Product Master</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "customer" in allowed_menus %}<a href="/customer/" class="menu-item" data-path="/customer/"><span class="menu-icon"><i data-lucide="users"></i></span><span>Customer Master</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "sales_person" in allowed_menus %}<a href="/sales-person/" class="menu-item" data-path="/sales-person/"><span class="menu-icon"><i data-lucide="user-round-check"></i></span><span>Sales Persons</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "commission_slabs" in allowed_menus %}<a href="/commission-slabs/" class="menu-item" data-path="/commission-slabs/"><span class="menu-icon"><i data-lucide="percent"></i></span><span>Commission Slabs</span></a>{% endif %}
+    </nav>
+  </div>
+
+  <div class="menu-section collapsible-section collapsed" data-section="transactions">
+    <button type="button" class="section-toggle" aria-expanded="false">
+      <span class="menu-title">TRANSACTIONS</span><span class="section-chevron">⌄</span>
+    </button>
+    <nav class="section-nav">
+      {% if user_type == "ADMIN" or "purchase" in allowed_menus %}<a href="/purchase/" class="menu-item" data-path="/purchase/"><span class="menu-icon"><i data-lucide="shopping-bag"></i></span><span>Purchase</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "company_payments" in allowed_menus %}<a href="/company-payments/" class="menu-item" data-path="/company-payments/"><span class="menu-icon"><i data-lucide="wallet"></i></span><span>Company Payments</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "sale" in allowed_menus %}<a href="/sale/" class="menu-item" data-path="/sale/"><span class="menu-icon"><i data-lucide="receipt-text"></i></span><span>Sales</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "sale_invoices" in allowed_menus %}<a href="/sale/invoices" class="menu-item" data-path="/sale/invoices"><span class="menu-icon"><i data-lucide="file-text"></i></span><span>Sales Invoices</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "receipts" in allowed_menus %}<a href="/receipts/" class="menu-item" data-path="/receipts/"><span class="menu-icon"><i data-lucide="hand-coins"></i></span><span>Money Received</span></a>{% endif %}
+    </nav>
+  </div>
+
+  <div class="menu-section collapsible-section collapsed" data-section="reports">
+    <button type="button" class="section-toggle" aria-expanded="false">
+      <span class="menu-title">REPORTS</span><span class="section-chevron">⌄</span>
+    </button>
+    <nav class="section-nav">
+      {% if user_type == "ADMIN" or "purchase_report" in allowed_menus %}<a href="/purchase-report" class="menu-item" data-path="/purchase-report"><span class="menu-icon"><i data-lucide="shopping-cart"></i></span><span>Purchase Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "company_payment_report" in allowed_menus %}<a href="/reports/company-payment/" class="menu-item" data-path="/reports/company-payment/"><span class="menu-icon"><i data-lucide="wallet"></i></span><span>Company Payment Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "sale_report" in allowed_menus %}<a href="/sale-report" class="menu-item" data-path="/sale-report"><span class="menu-icon"><i data-lucide="receipt"></i></span><span>Sale Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "sales_person_report" in allowed_menus %}<a href="/sales-person-report" class="menu-item" data-path="/sales-person-report"><span class="menu-icon"><i data-lucide="contact-round"></i></span><span>Sales Persons Details Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "stock_report" in allowed_menus %}<a href="/stock-report" class="menu-item" data-path="/stock-report"><span class="menu-icon"><i data-lucide="boxes"></i></span><span>Stock Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "commission_report" in allowed_menus %}<a href="/commission-report" class="menu-item" data-path="/commission-report"><span class="menu-icon"><i data-lucide="badge-percent"></i></span><span>Agent-wise Commission Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "collection_report" in allowed_menus %}<a href="/collection-report" class="menu-item" data-path="/collection-report"><span class="menu-icon"><i data-lucide="hand-coins"></i></span><span>Agent-wise Collection Report</span></a>{% endif %}
+      {% if user_type == "ADMIN" or "customer_ledger" in allowed_menus %}<a href="/customer-ledger" class="menu-item" data-path="/customer-ledger"><span class="menu-icon"><i data-lucide="book-open"></i></span><span>Customer Ledger</span></a>{% endif %}
+    </nav>
+  </div>
+
+  <div class="menu-section collapsible-section collapsed admin-section" data-section="administration">
+    <button type="button" class="section-toggle" aria-expanded="false">
+      <span class="menu-title">ADMINISTRATION</span><span class="section-chevron">⌄</span>
+    </button>
+    <nav class="section-nav">
+      {% if user_type == "ADMIN" %}
+      <a href="/create-user" class="menu-item" data-path="/create-user"><span class="menu-icon"><i data-lucide="user-plus"></i></span><span>Create User</span></a>
+      <a href="/user-management" class="menu-item" data-path="/user-management"><span class="menu-icon"><i data-lucide="users"></i></span><span>User Management</span></a>
+      <a href="/admin-monitoring" class="menu-item" data-path="/admin-monitoring"><span class="menu-icon"><i data-lucide="activity"></i></span><span>Admin Monitoring</span></a>
+      <a href="/audit-trail" class="menu-item" data-path="/audit-trail"><span class="menu-icon"><i data-lucide="clipboard-list"></i></span><span>Audit Trail</span></a>
+      {% endif %}
+      <a href="/profile" class="menu-item" data-path="/profile"><span class="menu-icon"><i data-lucide="user-circle"></i></span><span>My Profile</span></a>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="online"><span class="online-dot"></span><span>System Online</span></div>
+    <a href="/logout" class="menu-item logout"><span class="menu-icon"><i data-lucide="log-out"></i></span><span>Logout</span></a>
+  </div>
+</aside>
+<div class="backdrop" onclick="toggleSidebar()"></div>
+
+<script>
+(function () {
+  // All sidebar groups start collapsed. Click a heading to expand/collapse it.
+  document.querySelectorAll('.sidebar .collapsible-section').forEach(function (section) {
+    const button = section.querySelector('.section-toggle');
+    section.classList.add('collapsed');
+    if (button) {
+      button.setAttribute('aria-expanded', 'false');
+      button.addEventListener('click', function () {
+        const isExpanded = !section.classList.contains('collapsed');
+        section.classList.toggle('collapsed', isExpanded);
+        button.setAttribute('aria-expanded', String(!isExpanded));
+      });
+    }
+  });
+
+  const path = window.location.pathname || '/dashboard';
+  const links = document.querySelectorAll('.sidebar .menu-item[data-path]');
+  links.forEach(function (link) {
+    const target = link.getAttribute('data-path');
+    if (target && (path === target || (target !== '/' && path.startsWith(target)))) {
+      link.classList.add('active');
+    }
+  });
+
+  if (window.lucide) lucide.createIcons();
+})();
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.querySelector('.backdrop');
+  if (sidebar) sidebar.classList.toggle('open');
+  if (backdrop) backdrop.classList.toggle('show');
+}
+</script>

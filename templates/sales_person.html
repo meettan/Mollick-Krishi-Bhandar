@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Mollick Krishi Bhandar | Sales Persons</title>
+
+<link rel="stylesheet" href="/static/company_master.css?v=4">
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<style>
+/* Sales Person sidebar: exact Dashboard sidebar sizing/typography */
+:root {
+    --sidebar-width: 250px !important;
+}
+
+.sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: 250px !important;
+    background: #10231d !important;
+    color: #dce8e3 !important;
+    z-index: 50 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 18px 14px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+}
+
+.sidebar .brand {
+    height: 62px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 11px !important;
+    padding: 0 8px 17px !important;
+    border-bottom: 1px solid rgba(255,255,255,.09) !important;
+}
+
+.sidebar .brand-badge {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 11px !important;
+    background: #dff2ea !important;
+    color: #0c7257 !important;
+    display: grid !important;
+    place-items: center !important;
+    font-size: 21px !important;
+    font-weight: 900 !important;
+}
+
+.sidebar .brand-copy {
+    min-width: 0 !important;
+}
+
+.sidebar .brand-name {
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    letter-spacing: .5px !important;
+}
+
+.sidebar .brand-sub {
+    font-size: 10px !important;
+    color: #8ea79e !important;
+    margin-top: 2px !important;
+    white-space: nowrap !important;
+}
+
+.sidebar .menu-section {
+    padding-top: 22px !important;
+}
+
+.sidebar .menu-title {
+    padding: 0 10px 8px !important;
+    margin: 0 !important;
+    color: #738a82 !important;
+    font-size: 9px !important;
+    letter-spacing: 1.7px !important;
+    font-weight: 800 !important;
+}
+
+.sidebar .menu-section nav {
+    display: grid !important;
+    gap: 3px !important;
+}
+
+.sidebar a.menu-item {
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 11px !important;
+    padding: 0 10px !important;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    color: #afc0b9 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: normal !important;
+    box-sizing: border-box !important;
+    transition: .18s !important;
+}
+
+.sidebar a.menu-item:hover {
+    background: rgba(255,255,255,.055) !important;
+    color: #fff !important;
+}
+
+.sidebar a.menu-item.active {
+    background: #174334 !important;
+    color: #fff !important;
+    box-shadow: inset 3px 0 #2ca47e !important;
+}
+
+.sidebar a.menu-item .menu-icon {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px !important;
+    display: grid !important;
+    place-items: center !important;
+}
+
+.sidebar a.menu-item .menu-icon svg {
+    width: 17px !important;
+    height: 17px !important;
+}
+
+.sidebar a.menu-item > span:last-child {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+}
+
+.sidebar .sidebar-footer {
+    margin-top: auto !important;
+    padding: 13px 0 0 !important;
+    border-top: 1px solid rgba(255,255,255,.09) !important;
+}
+
+.sidebar .online {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 6px 10px 12px !important;
+    font-size: 10px !important;
+    color: #8ea69e !important;
+}
+
+.sidebar .online-dot {
+    width: 7px !important;
+    height: 7px !important;
+    border-radius: 50% !important;
+    background: #3dca8c !important;
+    box-shadow: 0 0 0 4px rgba(61,202,140,.11) !important;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: static !important;
+        width: 100% !important;
+        min-height: auto !important;
+    }
+}
+</style>
+
+
+<style>
+    .sales-person-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .sales-person-grid .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .target-value {
+        text-align: right;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .action-group {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+    }
+
+    .edit-btn,
+    .delete-btn {
+        border: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .edit-btn {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .delete-btn {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .edit-btn:hover {
+        background: #dbeafe;
+    }
+
+    .delete-btn:hover {
+        background: #fee2e2;
+    }
+
+    .form-actions-right {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+        .sales-person-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sales-person-grid .full-width {
+            grid-column: auto;
+        }
+    }
+</style>
+```
+
+<link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+```
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
+
+{% include 'sidebar.html' %}
+
+<!-- =====================================================
+     MAIN CONTENT
+====================================================== -->
+
+<main class="main-content">
+
+
+    <!-- HEADER -->
+
+    <header class="page-header">
+
+        <div>
+
+            <div class="eyebrow">
+                MASTER DATA
+            </div>
+
+            <h1>
+                Sales Persons
+            </h1>
+
+            <p>
+                Manage sales person information and targets.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            onclick="openAddModal()">
+
+            ＋ Add Sales Person
+
+        </button>
+
+    </header>
+
+
+    <!-- =================================================
+         FLASH MESSAGE
+    ================================================== -->
+
+    <div
+        id="messageBox"
+        style="display:none;"
+        class="alert">
+    </div>
+
+
+    <!-- =================================================
+         SEARCH
+    ================================================== -->
+
+    <section class="card toolbar-card">
+
+        <form
+            method="get"
+            action="/sales-person/"
+            class="search-form">
+
+            <div class="search-box">
+
+                <span class="search-icon">⌕</span>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search or '' }}"
+                    placeholder="Search Employee Code, Name, Mobile or Email..."
+                    autocomplete="off">
+
+            </div>
+
+
+            <select
+                name="status"
+                class="form-control"
+                style="max-width:160px;">
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option
+                    value="1"
+                    {% if status == "1" %}selected{% endif %}>
+
+                    Active
+
+                </option>
+
+                <option
+                    value="0"
+                    {% if status == "0" %}selected{% endif %}>
+
+                    Inactive
+
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="btn btn-secondary">
+
+                Search
+
+            </button>
+
+
+            {% if search or status %}
+
+                <a
+                    href="/sales-person/"
+                    class="btn btn-light">
+
+                    Clear
+
+                </a>
+
+            {% endif %}
+
+        </form>
+
+
+        <div class="record-count">
+
+            {{ sales_persons|length }}
+
+            record{% if sales_persons|length != 1 %}s{% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SALES PERSON LIST
+    ================================================== -->
+
+    <section class="card table-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Sales Person List
+                </h2>
+
+                <p>
+                    Employee details, targets and status
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-primary btn-small"
+                onclick="openAddModal()">
+
+                ＋ Add
+
+            </button>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Employee Code</th>
+
+                    <th>Name</th>
+
+                    <th>Mobile</th>
+
+                    <th>Email</th>
+
+                    <th>Joining Date</th>
+
+                    <th class="center">
+                        Daily Target
+                    </th>
+
+                    <th class="center">
+                        Monthly Target
+                    </th>
+
+                    <th class="center">
+                        Status
+                    </th>
+
+                    <th class="center">
+                        Action
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for row in sales_persons %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <span class="id-badge">
+                                {{ row["employee_code"] }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="company-name">
+                                {{ row["name"] }}
+                            </div>
+
+                        </td>
+
+
+                        <td>
+                            {{ row["mobile"] or '—' }}
+                        </td>
+
+
+                        <td>
+                            {{ row["email"] or '—' }}
+                        </td>
+
+
+                        <td>
+
+                            {% if row["joining_date"] %}
+
+                                {{ row["joining_date"] }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="center">
+
+                            {{ "%.2f"|format(
+                                row["daily_target"] or 0
+                            ) }}
+
+                        </td>
+
+
+                        <td class="center">
+
+                            {{ "%.2f"|format(
+                                row["monthly_target"] or 0
+                            ) }}
+
+                        </td>
+
+
+                        <td class="center">
+
+                            {% if row["status"] == 1 %}
+
+                                <span
+                                    class="status-badge status-active">
+
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="status-badge status-inactive">
+
+                                    Inactive
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="center">
+
+                            <div class="action-group">
+
+                                <button
+                                    type="button"
+                                    class="edit-btn"
+                                    onclick="editSalesPerson({{ row['id'] }})">
+
+                                    ✎ Edit
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="delete-btn"
+                                    onclick="deleteSalesPerson({{ row['id'] }})">
+
+                                    🗑 Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="empty">
+
+                            No sales person records found.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+```
+
+</div>
+
+<!-- =========================================================
+     ADD / EDIT MODAL
+========================================================= -->
+
+<div
+    id="salesPersonModal"
+    style="
+        display:none;
+        position:fixed;
+        z-index:9999;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,.45);
+        overflow:auto;
+    ">
+
+```
+<div
+    style="
+        background:white;
+        width:90%;
+        max-width:850px;
+        margin:50px auto;
+        border-radius:10px;
+        padding:25px;
+    ">
+
+    <div
+        style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        ">
+
+        <div>
+
+            <div class="eyebrow">
+                SALES PERSON MASTER
+            </div>
+
+            <h2 id="modalTitle">
+                Add Sales Person
+            </h2>
+
+        </div>
+
+
+        <button
+            type="button"
+            onclick="closeModal()"
+            style="
+                border:none;
+                background:none;
+                font-size:25px;
+                cursor:pointer;
+            ">
+
+            ×
+
+        </button>
+
+    </div>
+
+
+    <form id="salesPersonForm">
+
+        <input
+            type="hidden"
+            id="sales_person_id">
+
+
+        <section class="card form-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Sales Person Information
+                    </h2>
+
+                    <p>
+                        Basic employee and target information
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="sales-person-grid">
+
+
+                <!-- Employee Code -->
+
+                <div class="form-group">
+
+                    <label>
+                        Employee Code <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="employee_code"
+                        maxlength="30"
+                        required>
+
+                </div>
+
+
+                <!-- Name -->
+
+                <div class="form-group">
+
+                    <label>
+                        Name <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        maxlength="100"
+                        required>
+
+                </div>
+
+
+                <!-- Mobile -->
+
+                <div class="form-group">
+
+                    <label>
+                        Mobile
+                    </label>
+
+                    <input
+                        type="text"
+                        id="mobile"
+                        maxlength="20">
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label>
+                        Email ID
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        maxlength="100">
+
+                </div>
+
+
+                <!-- Joining Date -->
+
+                <div class="form-group">
+
+                    <label>
+                        Joining Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="joining_date">
+
+                </div>
+
+
+                <!-- Login User -->
+
+                <div class="form-group">
+
+                    <label>
+                        Login User
+                    </label>
+
+                    <select id="user_id">
+
+                        <option value="">
+                            -- Select User --
+                        </option>
+
+                        {% for user in users %}
+
+                            <option
+                                value="{{ user['id'] }}">
+
+                                {{ user['username'] }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Daily Target -->
+
+                <div class="form-group">
+
+                    <label>
+                        Daily Target
+                    </label>
+
+                    <input
+                        type="number"
+                        id="daily_target"
+                        min="0"
+                        step="0.01"
+                        value="0.00">
+
+                </div>
+
+
+                <!-- Monthly Target -->
+
+                <div class="form-group">
+
+                    <label>
+                        Monthly Target
+                    </label>
+
+                    <input
+                        type="number"
+                        id="monthly_target"
+                        min="0"
+                        step="0.01"
+                        value="0.00">
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select id="status">
+
+                        <option value="1">
+                            Active
+                        </option>
+
+                        <option value="0">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Address -->
+
+                <div class="form-group full-width">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        rows="4"
+                        maxlength="500"></textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FORM ACTION -->
+
+        <div
+            class="form-actions"
+            style="
+                display:flex;
+                justify-content:flex-end;
+                gap:10px;
+                margin-top:20px;
+            ">
+
+            <button
+                type="button"
+                class="btn btn-light"
+                onclick="closeModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+                id="saveButton">
+
+                Save Sales Person
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+```
+
+</div>
+
+<script>
+
+    // ========================================================
+    // OPEN ADD
+    // ========================================================
+
+    function openAddModal() {
+
+        document.getElementById(
+            "salesPersonForm"
+        ).reset();
+
+
+        document.getElementById(
+            "sales_person_id"
+        ).value = "";
+
+
+        document.getElementById(
+            "daily_target"
+        ).value = "0.00";
+
+
+        document.getElementById(
+            "monthly_target"
+        ).value = "0.00";
+
+
+        document.getElementById(
+            "status"
+        ).value = "1";
+
+
+        document.getElementById(
+            "modalTitle"
+        ).innerText =
+            "Add Sales Person";
+
+
+        document.getElementById(
+            "saveButton"
+        ).innerText =
+            "Save Sales Person";
+
+
+        document.getElementById(
+            "salesPersonModal"
+        ).style.display = "block";
+
+    }
+
+
+    // ========================================================
+    // CLOSE MODAL
+    // ========================================================
+
+    function closeModal() {
+
+        document.getElementById(
+            "salesPersonModal"
+        ).style.display = "none";
+
+    }
+
+
+    // ========================================================
+    // EDIT
+    // ========================================================
+
+    async function editSalesPerson(id) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `/sales-person/get/${id}`
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (!result.success) {
+
+                alert(
+                    result.message ||
+                    "Unable to load sales person."
+                );
+
+                return;
+
+            }
+
+
+            const data =
+                result.data;
+
+
+            document.getElementById(
+                "sales_person_id"
+            ).value =
+                data.id;
+
+
+            document.getElementById(
+                "employee_code"
+            ).value =
+                data.employee_code || "";
+
+
+            document.getElementById(
+                "name"
+            ).value =
+                data.name || "";
+
+
+            document.getElementById(
+                "mobile"
+            ).value =
+                data.mobile || "";
+
+
+            document.getElementById(
+                "email"
+            ).value =
+                data.email || "";
+
+
+            document.getElementById(
+                "joining_date"
+            ).value =
+                data.joining_date || "";
+
+
+            document.getElementById(
+                "user_id"
+            ).value =
+                data.user_id || "";
+
+
+            document.getElementById(
+                "daily_target"
+            ).value =
+                data.daily_target || 0;
+
+
+            document.getElementById(
+                "monthly_target"
+            ).value =
+                data.monthly_target || 0;
+
+
+            document.getElementById(
+                "status"
+            ).value =
+                data.status ?? 1;
+
+
+            document.getElementById(
+                "address"
+            ).value =
+                data.address || "";
+
+
+            document.getElementById(
+                "modalTitle"
+            ).innerText =
+                "Edit Sales Person";
+
+
+            document.getElementById(
+                "saveButton"
+            ).innerText =
+                "Update Sales Person";
+
+
+            document.getElementById(
+                "salesPersonModal"
+            ).style.display =
+                "block";
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to load sales person."
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // SAVE / UPDATE
+    // ========================================================
+
+    document.getElementById(
+        "salesPersonForm"
+    ).addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const id =
+                document.getElementById(
+                    "sales_person_id"
+                ).value;
+
+
+            let url;
+
+            if (id) {
+
+                url =
+                    `/sales-person/update/${id}`;
+
+            }
+            else {
+
+                url =
+                    "/sales-person/save";
+
+            }
+
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "employee_code",
+                document.getElementById(
+                    "employee_code"
+                ).value
+            );
+
+
+            formData.append(
+                "name",
+                document.getElementById(
+                    "name"
+                ).value
+            );
+
+
+            formData.append(
+                "mobile",
+                document.getElementById(
+                    "mobile"
+                ).value
+            );
+
+
+            formData.append(
+                "email",
+                document.getElementById(
+                    "email"
+                ).value
+            );
+
+
+            formData.append(
+                "address",
+                document.getElementById(
+                    "address"
+                ).value
+            );
+
+
+            formData.append(
+                "joining_date",
+                document.getElementById(
+                    "joining_date"
+                ).value
+            );
+
+
+            formData.append(
+                "daily_target",
+                document.getElementById(
+                    "daily_target"
+                ).value || "0"
+            );
+
+
+            formData.append(
+                "monthly_target",
+                document.getElementById(
+                    "monthly_target"
+                ).value || "0"
+            );
+
+
+            formData.append(
+                "status",
+                document.getElementById(
+                    "status"
+                ).value
+            );
+
+
+            formData.append(
+                "user_id",
+                document.getElementById(
+                    "user_id"
+                ).value
+            );
+
+
+            const button =
+                document.getElementById(
+                    "saveButton"
+                );
+
+
+            button.disabled = true;
+
+            button.innerText =
+                "Saving...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        url,
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (result.success) {
+
+                    closeModal();
+
+                    alert(
+                        result.message ||
+                        "Saved successfully."
+                    );
+
+
+                    window.location.href =
+                        "/sales-person/";
+
+                }
+                else {
+
+                    alert(
+                        result.message ||
+                        "Unable to save."
+                    );
+
+                }
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Internal Server Error."
+                );
+
+            }
+            finally {
+
+                button.disabled = false;
+
+                button.innerText =
+                    id
+                    ? "Update Sales Person"
+                    : "Save Sales Person";
+
+            }
+
+        }
+    );
+
+
+    // ========================================================
+    // DELETE
+    // ========================================================
+
+    async function deleteSalesPerson(id) {
+
+        if (
+            !confirm(
+                "Are you sure you want to delete this sales person?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/sales-person/delete/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (result.success) {
+
+                alert(
+                    result.message ||
+                    "Deleted successfully."
+                );
+
+
+                window.location.href =
+                    "/sales-person/";
+
+            }
+            else {
+
+                alert(
+                    result.message ||
+                    "Unable to delete."
+                );
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Internal Server Error."
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // CLOSE MODAL WHEN CLICK OUTSIDE
+    // ========================================================
+
+    window.addEventListener(
+        "click",
+        function(event) {
+
+            const modal =
+                document.getElementById(
+                    "salesPersonModal"
+                );
+
+
+            if (event.target === modal) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+</script>
+
+
+<script>
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mollick Krishi Bhandar | Product Master</title>
+<link rel="stylesheet" href="/static/product_master.css?v=2">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+.sidebar .menu-item{display:flex;align-items:center;gap:11px;}
+.sidebar .menu-item .icon{width:18px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
+.sidebar .menu-item .icon svg{width:17px;height:17px;display:block;stroke-width:2;}
+.sidebar .menu-item>span:last-child{display:inline-flex;align-items:center;line-height:1;}
+</style>
+</head>
+<body>
+<div class="layout">
+{% include 'sidebar.html' %}
+<main class="main">
+  <header class="topbar"><div><div class="breadcrumb">MASTER DATA</div><h1>Product Master</h1><p class="subtitle">Manage products and product configuration.</p></div><a href="/product/add" class="btn primary">+ Add Product</a></header>
+  {% if flash %}<div class="alert {% if flash.type == 'error' %}alert-error{% else %}alert-success{% endif %}">{{ flash.message }}</div>{% endif %}
+  <section class="card toolbar">
+    <form method="get" action="/product" class="search-form"><div class="search-box"><span class="search-icon">⌕</span><input name="q" value="{{ q }}" placeholder="Search product, company, HSN or product type..." autocomplete="off"></div><button class="btn secondary" type="submit">Search</button>{% if q %}<a href="/product" class="btn light">Clear</a>{% endif %}</form>
+    <div class="record-info"><strong>{{ products|length }}</strong> record{% if products|length != 1 %}s{% endif %}</div>
+  </section>
+  <section class="card table-card">
+    <div class="card-header"><div><h2>Product List</h2><p>Product, company, unit, GST and status</p></div></div>
+    <div class="table-wrapper"><table>
+      <thead><tr><th>Product ID</th><th>Product Description</th><th>Company</th><th>Type</th><th>Unit</th><th>GST %</th><th>Status</th><th class="center">Action</th></tr></thead>
+      <tbody>
+      {% for row in products %}
+      <tr><td><span class="id-badge">{{ row.PROD_ID }}</span></td><td><div class="product-name">{{ row.PROD_DESC }}</div></td><td>{{ row.comp_name or '—' }}</td><td>{{ row.PROD_TYPE or '—' }}</td><td>{{ row.unit_label }}</td><td>{{ row.GST_RT if row.GST_RT is not none else '—' }}</td><td>{% if row.mat_state == 1 %}<span class="status active">Active</span>{% else %}<span class="status inactive">Inactive</span>{% endif %}</td><td class="center action-cell"><a href="/product/edit/{{ row.PROD_ID }}" class="edit-button">Edit</a><form method="post" action="/product/delete/{{ row.PROD_ID }}" class="delete-form" onsubmit="return confirm('Delete this product?');"><button type="submit" class="delete-button">Delete</button></form></td></tr>
+      {% else %}<tr><td colspan="8" class="empty">No product records found.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+</main></div>
+<script>document.addEventListener("DOMContentLoaded",function(){if(window.lucide){lucide.createIcons();}});</script>
+</body></html>

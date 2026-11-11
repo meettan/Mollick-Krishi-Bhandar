@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Mollick Krishi Bhandar | Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/dashboard.css?v=10"
+    >
+
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    {% include 'sidebar.html' %}
+
+
+    <!-- MOBILE BACKDROP -->
+
+
+    <!-- =====================================================
+         MAIN AREA
+         ===================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    class="menu-toggle"
+                    onclick="toggleSidebar()"
+                    aria-label="Open sidebar"
+                >
+
+                    <i data-lucide="menu"></i>
+
+                </button>
+
+
+                <div class="breadcrumb">
+
+                    <span>
+                        Mollick Krishi Bhandar
+
+                    </span>
+
+                    <i data-lucide="chevron-right"></i>
+
+                    <strong>
+                        Dashboard
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+
+                <!-- SEARCH -->
+
+                <div class="global-search">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        aria-label="Search"
+                    >
+
+                </div>
+
+
+                <!-- NOTIFICATION -->
+
+                <button
+                    class="round-btn"
+                    aria-label="Notifications"
+                >
+
+                    <i data-lucide="bell"></i>
+
+                    <span class="bell-dot"></span>
+
+                </button>
+
+
+                <!-- USER -->
+
+                <div class="user-menu">
+
+                    <div class="avatar">
+
+                        {{ username[:1]|upper }}
+
+                    </div>
+
+
+                    <div class="user-copy">
+
+                        <strong>
+                            {{ username }}
+                        </strong>
+
+                        <small>
+                            {{ user_type }}
+                        </small>
+
+                    </div>
+
+
+                    <i
+                        data-lucide="chevron-down"
+                        class="user-chevron"
+                    ></i>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <div class="content-wrap">
+
+
+            <!-- PAGE HEADER -->
+
+            <section class="page-head">
+
+                <div>
+
+                    <div class="page-label">
+                        OVERVIEW
+                    </div>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Centralized view of Mollick Krishi Bhandar
+                        master data and transactions.
+                    </p>
+
+                </div>
+
+
+                <div class="date-card">
+
+                    <i data-lucide="calendar-days"></i>
+
+                    <span id="today"></span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 STATISTICS
+                 ================================================= -->
+
+            <section class="stats">
+
+                <!-- COMPANY MASTER -->
+                <a href="/company" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon green"><i data-lucide="building-2"></i></div>
+                        <span class="stat-tag">MASTER</span>
+                    </div>
+                    <div class="stat-label">Company Master</div>
+                    <div class="stat-value">{{ stats.companies if stats.companies is not none else "—" }}</div>
+                    <div class="stat-foot"><span>Registered companies</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+                <!-- PRODUCT MASTER -->
+                <a href="/product" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon blue"><i data-lucide="package"></i></div>
+                        <span class="stat-tag blue-tag">MASTER</span>
+                    </div>
+                    <div class="stat-label">Product Master</div>
+                    <div class="stat-value">{{ stats.products if stats.products is not none else "—" }}</div>
+                    <div class="stat-foot"><span>Products in master</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+                <!-- PURCHASE -->
+                <a href="/purchase-report" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon indigo"><i data-lucide="shopping-cart"></i></div>
+                        <span class="stat-tag indigo-tag">PURCHASE</span>
+                    </div>
+                    <div class="stat-label">Purchase Invoices</div>
+                    <div class="stat-value">{{ stats.purchase_invoices if stats.purchase_invoices is not none else "—" }}</div>
+                    <div class="stat-foot"><span>Total purchase invoices</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+                <!-- SALE -->
+                <a href="/sale-report" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon rose"><i data-lucide="receipt"></i></div>
+                        <span class="stat-tag rose-tag">SALE</span>
+                    </div>
+                    <div class="stat-label">Sale Invoices</div>
+                    <div class="stat-value">{{ stats.sale_invoices if stats.sale_invoices is not none else "—" }}</div>
+                    <div class="stat-foot"><span>Total sale invoices</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+                <!-- TOTAL PURCHASE THIS FINANCIAL YEAR -->
+                <a href="/purchase-report" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon amber"><i data-lucide="wallet"></i></div>
+                        <span class="stat-tag amber-tag">FY {{ stats.financial_year }}</span>
+                    </div>
+                    <div class="stat-label">Total Purchase</div>
+                    <div class="stat-value">₹{{ "{:,.2f}".format(stats.total_purchase or 0) }}</div>
+                    <div class="stat-foot"><span>Current financial year</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+                <!-- TOTAL SALE THIS FINANCIAL YEAR -->
+                <a href="/sale-report" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon rose"><i data-lucide="trending-up"></i></div>
+                        <span class="stat-tag rose-tag">FY {{ stats.financial_year }}</span>
+                    </div>
+                    <div class="stat-label">Total Sale</div>
+                    <div class="stat-value">₹{{ "{:,.2f}".format(stats.total_sale or 0) }}</div>
+                    <div class="stat-foot"><span>Current financial year</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+                <!-- ACCESS -->
+                <a href="/user-management" class="stat-card stat-link">
+                    <div class="stat-top">
+                        <div class="stat-icon violet"><i data-lucide="users"></i></div>
+                        <span class="stat-tag violet-tag">ACCESS</span>
+                    </div>
+                    <div class="stat-label">Access</div>
+                    <div class="stat-value">{{ stats.users if stats.users is not none else "—" }}</div>
+                    <div class="stat-foot"><span>Authorized users</span><i data-lucide="arrow-up-right"></i></div>
+                </a>
+
+            </section>
+
+
+            <!-- =================================================
+                 MAIN GRID
+                 ================================================= -->
+
+            <section class="main-grid">
+
+
+                <!-- TRANSACTION OVERVIEW -->
+
+                <article class="card chart-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Transaction Overview
+                            </h2>
+
+                            <p>
+                                Purchase and sale activity at a glance.
+                            </p>
+
+                        </div>
+
+
+                        <div class="period-select">
+
+                            <span>
+                                Last 6 months
+                            </span>
+
+                            <i data-lucide="chevron-down"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart">
+
+                        <div class="chart-y">
+
+                            <span>100</span>
+                            <span>75</span>
+                            <span>50</span>
+                            <span>25</span>
+                            <span>0</span>
+
+                        </div>
+
+
+                        <div class="chart-body">
+
+                            <div class="gridline g1"></div>
+                            <div class="gridline g2"></div>
+                            <div class="gridline g3"></div>
+                            <div class="gridline g4"></div>
+
+
+                            <div class="bars">
+
+                                <div class="bar-group">
+
+                                    <div
+                                        class="bar purchase"
+                                        style="height:44%"
+                                    ></div>
+
+                                    <div
+                                        class="bar sale"
+                                        style="height:31%"
+                                    ></div>
+
+                                    <span>
+                                        Apr
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bar-group">
+
+                                    <div
+                                        class="bar purchase"
+                                        style="height:55%"
+                                    ></div>
+
+                                    <div
+                                        class="bar sale"
+                                        style="height:42%"
+                                    ></div>
+
+                                    <span>
+                                        May
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bar-group">
+
+                                    <div
+                                        class="bar purchase"
+                                        style="height:50%"
+                                    ></div>
+
+                                    <div
+                                        class="bar sale"
+                                        style="height:53%"
+                                    ></div>
+
+                                    <span>
+                                        Jun
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bar-group">
+
+                                    <div
+                                        class="bar purchase"
+                                        style="height:67%"
+                                    ></div>
+
+                                    <div
+                                        class="bar sale"
+                                        style="height:46%"
+                                    ></div>
+
+                                    <span>
+                                        Jul
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bar-group">
+
+                                    <div
+                                        class="bar purchase"
+                                        style="height:61%"
+                                    ></div>
+
+                                    <div
+                                        class="bar sale"
+                                        style="height:60%"
+                                    ></div>
+
+                                    <span>
+                                        Aug
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bar-group">
+
+                                    <div
+                                        class="bar purchase"
+                                        style="height:78%"
+                                    ></div>
+
+                                    <div
+                                        class="bar sale"
+                                        style="height:66%"
+                                    ></div>
+
+                                    <span>
+                                        Sep
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-legend">
+
+                        <span>
+
+                            <i class="legend purchase-legend"></i>
+
+                            Purchase
+
+                        </span>
+
+
+                        <span>
+
+                            <i class="legend sale-legend"></i>
+
+                            Sale
+
+                        </span>
+
+
+                        <small>
+                            Analytics panel ready for live reporting data
+                        </small>
+
+                    </div>
+
+                </article>
+
+
+                <!-- QUICK ACCESS -->
+
+                <article class="card quick-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Quick Access
+                            </h2>
+
+                            <p>
+                                Frequently used modules.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-grid">
+
+
+                        <!-- COMPANY -->
+
+                        <a
+                            href="/company"
+                            class="quick-tile green-tile"
+                        >
+
+                            <div class="quick-tile-icon">
+
+                                <i data-lucide="building-2"></i>
+
+                            </div>
+
+
+                            <strong>
+                                Company Master
+                            </strong>
+
+
+                            <span>
+                                Manage companies
+                            </span>
+
+
+                            <i
+                                data-lucide="arrow-up-right"
+                            ></i>
+
+                        </a>
+
+
+                        <!-- PRODUCT -->
+
+                        <a
+                            href="/product"
+                            class="quick-tile blue-tile"
+                        >
+
+                            <div class="quick-tile-icon">
+
+                                <i data-lucide="package"></i>
+
+                            </div>
+
+
+                            <strong>
+                                Product Master
+                            </strong>
+
+
+                            <span>
+                                Manage products
+                            </span>
+
+
+                            <i
+                                data-lucide="arrow-up-right"
+                            ></i>
+
+                        </a>
+
+
+                        <!-- CUSTOMER -->
+
+                        <a
+                            href="/customer/"
+                            class="quick-tile green-tile"
+                        >
+
+                            <div class="quick-tile-icon">
+                                <i data-lucide="users"></i>
+                            </div>
+
+                            <strong>
+                                Customer Master
+                            </strong>
+
+                            <span>
+                                Manage customers
+                            </span>
+
+                            <i data-lucide="arrow-up-right"></i>
+
+                        </a>
+
+
+                        <!-- PURCHASE -->
+
+                        <a
+                            href="/purchase-report"
+                            class="quick-tile indigo-tile"
+                        >
+
+                            <div class="quick-tile-icon">
+
+                                <i data-lucide="shopping-cart"></i>
+
+                            </div>
+
+
+                            <strong>
+                                Purchase Report
+                            </strong>
+
+
+                            <span>
+                                Analyse purchases
+                            </span>
+
+
+                            <i
+                                data-lucide="arrow-up-right"
+                            ></i>
+
+                        </a>
+
+
+                        <!-- SALE -->
+
+                        <a
+                            href="/sale-report"
+                            class="quick-tile rose-tile"
+                        >
+
+                            <div class="quick-tile-icon">
+
+                                <i data-lucide="receipt"></i>
+
+                            </div>
+
+
+                            <strong>
+                                Sale Report
+                            </strong>
+
+
+                            <span>
+                                Analyse sales
+                            </span>
+
+
+                            <i
+                                data-lucide="arrow-up-right"
+                            ></i>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- =================================================
+                 LOWER GRID
+                 ================================================= -->
+
+            <section class="lower-grid">
+
+
+                <!-- SYSTEM STATUS -->
+
+                <article class="card status-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                System Status
+                            </h2>
+
+                            <p>
+                                Application services.
+                            </p>
+
+                        </div>
+
+
+                        <span class="live-badge">
+
+                            <i></i>
+
+                            All services online
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="status-list">
+
+
+                        <div class="status-item">
+
+                            <span>
+                                FastAPI application
+                            </span>
+
+                            <strong>
+                                Running
+                            </strong>
+
+                            <i></i>
+
+                        </div>
+
+
+                        <div class="status-item">
+
+                            <span>
+                                Session service
+                            </span>
+
+                            <strong>
+                                Active
+                            </strong>
+
+                            <i></i>
+
+                        </div>
+
+
+                        <div class="status-item">
+
+                            <span>
+                                MySQL database
+                            </span>
+
+                            <strong>
+                                Connected
+                            </strong>
+
+                            <i></i>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <!-- OTHER USERS CURRENTLY SIGNED IN -->
+
+                <article class="card activity-card">
+
+                    <div class="card-header">
+                        <div>
+                            <h2>Other Users Currently Signed In</h2>
+                            <p>Live sessions, excluding your account.</p>
+                        </div>
+                    </div>
+
+                    <div class="activity-list" id="other-active-users">
+                        {% for active_user in other_active_users %}
+                        <div class="activity-item">
+                            <div class="activity-icon login">
+                                <i data-lucide="user-round-check"></i>
+                            </div>
+                            <div>
+                                <strong>{{ active_user.username }}</strong>
+                                <span>{{ active_user.user_type }} · Signed in {{ active_user.signed_in_at.strftime('%d-%m-%Y %H:%M') if active_user.signed_in_at else '' }}</span>
+                            </div>
+                            <time>Online</time>
+                        </div>
+                        {% else %}
+                        <div class="activity-item" id="no-active-users">
+                            <div class="activity-icon system">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div>
+                                <strong>No other users online</strong>
+                                <span>Other signed-in users will appear here.</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- FOOTER -->
+
+            <footer class="footer">
+
+                © 2026
+
+                <strong>
+                    Mollick Krishi Bhandar
+
+                </strong>
+
+                <span>
+                    •
+                </span>
+
+                Fertilizer Management System
+
+            </footer>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+    /*
+     * Initialize Lucide icons
+     */
+
+    if (window.lucide) {
+
+        lucide.createIcons();
+
+    }
+
+
+    /*
+     * Today's date
+     */
+
+    const todayElement =
+        document.getElementById("today");
+
+
+    if (todayElement) {
+
+        todayElement.textContent =
+            new Date().toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+    }
+
+
+    /*
+     * Mobile sidebar
+     */
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const backdrop =
+            document.querySelector(".backdrop");
+
+
+        if (sidebar) {
+
+            sidebar.classList.toggle("open");
+
+        }
+
+
+        if (backdrop) {
+
+            backdrop.classList.toggle("show");
+
+        }
+
+    }
+
+</script>
+
+
+<script>
+(function () {
+    const container = document.getElementById("other-active-users");
+    if (!container) return;
+
+    let activityRequestRunning = false;
+    let heartbeatRequestRunning = false;
+
+    function makeItem(user) {
+        const item = document.createElement("div");
+        item.className = "activity-item";
+
+        const icon = document.createElement("div");
+        icon.className = "activity-icon login";
+        const iconEl = document.createElement("i");
+        iconEl.setAttribute("data-lucide", "user-round-check");
+        icon.appendChild(iconEl);
+
+        const details = document.createElement("div");
+        const name = document.createElement("strong");
+        name.textContent = user.username || "User";
+        const meta = document.createElement("span");
+        meta.textContent = (user.user_type || "USER") + " · Signed in " + (user.signed_in_at || "");
+        details.appendChild(name);
+        details.appendChild(meta);
+
+        const status = document.createElement("time");
+        status.textContent = "Online";
+
+        item.appendChild(icon);
+        item.appendChild(details);
+        item.appendChild(status);
+        return item;
+    }
+
+    function showEmptyState(message) {
+        const empty = document.createElement("div");
+        empty.className = "activity-item";
+        const icon = document.createElement("div");
+        icon.className = "activity-icon system";
+        const iconEl = document.createElement("i");
+        iconEl.setAttribute("data-lucide", "users");
+        icon.appendChild(iconEl);
+        const details = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = message;
+        const note = document.createElement("span");
+        note.textContent = "Other signed-in users will appear here.";
+        details.appendChild(title);
+        details.appendChild(note);
+        empty.appendChild(icon);
+        empty.appendChild(details);
+        container.replaceChildren(empty);
+    }
+
+    async function refreshActivity() {
+        if (activityRequestRunning) return;
+        activityRequestRunning = true;
+        try {
+            const response = await fetch("/activity/other-users", {
+                headers: {"Accept": "application/json"},
+                cache: "no-store",
+                credentials: "same-origin"
+            });
+            if (!response.ok) {
+                if (response.status === 401) showEmptyState("Please sign in again");
+                return;
+            }
+            const data = await response.json();
+            container.replaceChildren();
+            if (!Array.isArray(data.users) || data.users.length === 0) {
+                showEmptyState("No other users online");
+            } else {
+                data.users.forEach(function (user) {
+                    container.appendChild(makeItem(user));
+                });
+            }
+            if (window.lucide) window.lucide.createIcons();
+        } catch (e) {
+            // Keep the last successful display if the network is temporarily busy.
+        } finally {
+            activityRequestRunning = false;
+        }
+    }
+
+    async function heartbeat() {
+        if (heartbeatRequestRunning) return;
+        heartbeatRequestRunning = true;
+        try {
+            await fetch("/activity/heartbeat", {
+                method: "POST",
+                headers: {"Accept": "application/json"},
+                cache: "no-store",
+                credentials: "same-origin"
+            });
+        } catch (e) {
+            // Retry on the next scheduled heartbeat.
+        } finally {
+            heartbeatRequestRunning = false;
+        }
+    }
+
+    // Register this session first, then load the other users.
+    (async function initializeActivity() {
+        await heartbeat();
+        await refreshActivity();
+        window.setInterval(heartbeat, 30000);
+        window.setInterval(refreshActivity, 15000);
+    })();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mollick Krishi Bhandar | Purchase Report</title>
+<link href="/static/dashboard.css?v=10" rel="stylesheet">
+<style>
+body{margin:0;background:#f5f7fb;font-family:Arial,sans-serif}
+.main .wrap{padding:28px 30px 18px;max-width:1600px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:15px}
+.top h2{margin:0}
+.filters,.cards{background:#fff;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 2px 10px #0001}
+.filters{display:flex;gap:10px;flex-wrap:wrap}
+.filters label{font-size:12px;font-weight:600}
+.filters input,.filters select{display:block;padding:8px;border:1px solid #ccd3df;border-radius:6px;min-width:145px}
+.btn{display:inline-block;padding:9px 13px;border-radius:6px;border:0;text-decoration:none;cursor:pointer;background:#34495e;color:#fff}
+.btn.light{background:#eef2f7;color:#222}
+.cards{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.main .card{padding:10px;background:#f7f9fc;border-radius:7px}
+.main .card small{display:block;color:#667}
+.main .card b{font-size:17px}
+.tablewrap{background:#fff;border-radius:10px;padding:10px;overflow:auto;box-shadow:0 2px 10px #0001}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{border-bottom:1px solid #e6e9ef;padding:8px;white-space:nowrap}
+th{background:#f1f4f8;text-align:left}
+.num{text-align:right}
+@media(max-width:900px){.main .wrap{padding:20px 16px}.top{align-items:flex-start;flex-direction:column}.cards{grid-template-columns:repeat(2,1fr)}}
+@media print{.no-print{display:none!important}.main{margin-left:0}.sidebar,.backdrop,.topbar{display:none!important}.main .wrap{padding:0}.tablewrap,.filters,.cards{box-shadow:none}.cards{grid-template-columns:repeat(7,1fr)}}
+
+.print-header{display:none}
+@media print{
+  @page{size:A4 landscape;margin:12mm 10mm 14mm 10mm}
+  body{background:#fff!important;color:#111;font-family:Arial,Helvetica,sans-serif;font-size:9px}
+  .print-header{display:block;text-align:center;margin:0 0 10px}
+  .print-org{font-size:18px;font-weight:700;letter-spacing:.8px}
+  .print-report-title{font-size:14px;font-weight:700;margin-top:3px;text-transform:uppercase}
+  .print-meta{display:flex;justify-content:space-between;margin-top:7px;font-size:9px}
+  .print-filters{display:flex;justify-content:center;gap:18px;margin-top:5px;font-size:8.5px}
+  .print-rule{border-bottom:2px solid #222;margin-top:7px}
+  .main .wrap{max-width:none;padding:0!important;margin:0!important}
+  .tablewrap{padding:0!important;border:0!important;border-radius:0!important;overflow:visible!important}
+  .cards{display:grid!important;grid-template-columns:repeat(7,1fr)!important;gap:0!important;padding:0!important;margin:0 0 10px!important;border:1px solid #333!important;border-radius:0!important}
+  .main .card{border-right:1px solid #333!important;border-radius:0!important;background:#fff!important;padding:6px 7px!important}
+  .main .card:last-child{border-right:0!important}
+  .main .card small{font-size:7.5px!important;color:#333!important;text-transform:uppercase}
+  .main .card b{font-size:10px!important}
+  table{width:100%!important;border-collapse:collapse!important;font-size:7px!important}
+  th,td{border:1px solid #555!important;padding:3px 4px!important;white-space:nowrap!important}
+  th{background:#e9ecef!important;font-weight:700!important;text-align:center!important}
+  td.num{text-align:right!important}
+  tbody tr{page-break-inside:avoid}
+  tfoot{display:table-row-group}
+  tfoot tr.grand-total{font-weight:700;background:#e9ecef!important}
+  tfoot td{border-top:2px solid #222!important;background:#e9ecef!important}
+  .topbar,.top,.filters,.no-print,.sidebar,.backdrop{display:none!important}
+  .main{margin-left:0!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+{% include 'sidebar.html' %}
+<main class="main">
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Open sidebar"><i data-lucide="menu"></i></button>
+    <div class="breadcrumb"><span>Mollick Krishi Bhandar</span><i data-lucide="chevron-right"></i><strong>Purchase Report</strong></div>
+  </div>
+  <div class="topbar-right"><a class="btn light no-print" href="/dashboard">Dashboard</a></div>
+</header>
+<div class="print-header">
+  <div class="print-org">Mollick Krishi Bhandar</div>
+  <div class="print-report-title">PURCHASE REPORT</div>
+  <div class="print-meta">
+    <span><b>Report Period:</b> {% if from_date %}{{from_date[8:10]}}-{{from_date[5:7]}}-{{from_date[0:4]}}{% else %}All Dates{% endif %} <b>to</b> {% if to_date %}{{to_date[8:10]}}-{{to_date[5:7]}}-{{to_date[0:4]}}{% else %}All Dates{% endif %}</span>
+    <span><b>Generated On:</b> {{generated_on[8:10]}}-{{generated_on[5:7]}}-{{generated_on[0:4]}}</span>
+  </div>
+  <div class="print-filters">
+    <span><b>RO No.:</b> {{ro or 'All'}}</span>
+    <span><b>Company:</b> All / Selected</span>
+    <span><b>Status:</b> {{status or 'All'}}</span>
+  </div>
+  <div class="print-rule"></div>
+</div>
+<div class="wrap"><div class="top"><h2>Purchase Report</h2><div class="no-print"><a class="btn light" href="/">Dashboard</a> <button class="btn" onclick="window.print()">Print</button> <a class="btn" href="/purchase-report/export?from_date={{from_date}}&to_date={{to_date}}&ro={{ro}}&company_id={{company_id}}&status={{status}}">Export CSV</a></div></div>
+<form class="filters no-print" method="get"><label>From Date<input type="date" name="from_date" value="{{from_date}}"></label><label>To Date<input type="date" name="to_date" value="{{to_date}}"></label><label>RO No<select name="ro"><option value="">All</option>{% for x in ros %}<option value="{{x}}" {% if ro==x %}selected{% endif %}>{{x}}</option>{% endfor %}</select></label><label>Company<select name="company_id"><option value="">All</option>{% for c in companies %}<option value="{{c.id}}" {% if company_id|string==c.id|string %}selected{% endif %}>{{c.name}}</option>{% endfor %}</select></label><label>Status<select name="status"><option value="">All</option>{% for x in ['DRAFT','POSTED','PAID','PARTIAL'] %}<option value="{{x}}" {% if status==x %}selected{% endif %}>{{x}}</option>{% endfor %}</select></label><label>&nbsp;<button class="btn" type="submit">Search</button></label><label>&nbsp;<a class="btn light" href="/purchase-report">Clear</a></label></form>
+<div class="cards"><div class="card"><small>Gross</small><b>{{'%.2f'|format(summary.gross)}}</b></div><div class="card"><small>Discount</small><b>{{'%.2f'|format(summary.discount)}}</b></div><div class="card"><small>Taxable</small><b>{{'%.2f'|format(summary.taxable)}}</b></div><div class="card"><small>GST</small><b>{{'%.2f'|format(summary.gst)}}</b></div><div class="card"><small>Net</small><b>{{'%.2f'|format(summary.net)}}</b></div><div class="card"><small>Paid</small><b>{{'%.2f'|format(summary.paid)}}</b></div><div class="card"><small>Outstanding</small><b>{{'%.2f'|format(summary.outstanding)}}</b></div></div>
+<div class="tablewrap"><table><thead><tr><th>Date</th><th>Purchase No</th><th>Invoice No</th><th>RO</th><th>Company</th><th>Product</th><th>Batch</th><th>Qty</th><th>Rate</th><th>Gross</th><th>Discount</th><th>Taxable</th><th>GST %</th><th>GST</th><th>Line Total</th><th>Status</th></tr></thead><tbody>{% for r in rows %}<tr><td>{{r.purchase_date}}</td><td>{{r.purchase_no}}</td><td>{{r.invoice_no or ''}}</td><td>{{r.ro_no}}</td><td>{{r.company_name}}</td><td>{{r.product_id}} - {{r.product_name}}</td><td>{{r.batch_id or ''}}</td><td class="num">{{r.qty}}</td><td class="num">{{r.unit_price}}</td><td class="num">{{r.line_gross}}</td><td class="num">{{r.line_discount}}</td><td class="num">{{r.line_taxable}}</td><td class="num">{{r.gst_rate}}</td><td class="num">{{r.line_gst}}</td><td class="num">{{r.line_total}}</td><td>{{r.status}}</td></tr>{% else %}<tr><td colspan="16" style="text-align:center;padding:30px">No purchase records found.</td></tr>{% endfor %}</tbody>{% if rows %}<tfoot><tr class="grand-total"><td colspan="7">GRAND TOTAL</td><td class="num">{{ '%.3f'|format(rows|sum(attribute='qty')) }}</td><td></td><td class="num">{{ '%.2f'|format(rows|sum(attribute='line_gross')) }}</td><td class="num">{{ '%.2f'|format(rows|sum(attribute='line_discount')) }}</td><td class="num">{{ '%.2f'|format(rows|sum(attribute='line_taxable')) }}</td><td></td><td class="num">{{ '%.2f'|format(rows|sum(attribute='line_gst')) }}</td><td class="num">{{ '%.2f'|format(rows|sum(attribute='line_total')) }}</td><td></td></tr></tfoot>{% endif %}</table></div></div>
+</main>
+</div>
+<script>
+if(window.lucide) lucide.createIcons();
+const reportItem = document.querySelector('a[href="/purchase-report"]');
+if(reportItem) reportItem.classList.add('active');
+function toggleSidebar() {
+  const sidebar=document.getElementById('sidebar');
+  const backdrop=document.querySelector('.backdrop');
+  if(sidebar) sidebar.classList.toggle('open');
+  if(backdrop) backdrop.classList.toggle('show');
+}
+</script>
+</body>
+</html>

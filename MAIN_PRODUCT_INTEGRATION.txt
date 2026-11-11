@@ -1,0 +1,62 @@
+Add Product Master to app/main.py.
+
+Use this import:
+
+from .masters.product_master import (
+    router as product_router,
+    setup_product_master,
+)
+
+Add:
+
+app.include_router(product_router)
+
+If you already have a startup() function, call:
+
+try:
+    setup_product_master()
+except Exception as exc:
+    print("Product Master initialization error:", exc)
+
+Do NOT use:
+
+from masters.product_master import router
+
+Use:
+
+from .masters.product_master import router as product_router
+
+Required folders:
+
+app/
+├── main.py
+└── masters/
+    ├── __init__.py
+    └── product_master.py
+
+templates/
+└── masters/
+    ├── product_list.html
+    └── product_form.html
+
+static/
+└── product_master.css
+
+Routes:
+
+/product
+/product/add
+/product/edit/{prod_id}
+/product/delete/{prod_id}
+
+Database:
+
+localhost
+root
+blank password
+python_login
+mm_product
+
+Company dropdown reads:
+
+python_login.mm_company_dtls

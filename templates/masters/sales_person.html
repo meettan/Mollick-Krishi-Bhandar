@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sales Person Master</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="/static/css/sales_person.css">
+
+<style>
+:root{--sidebar-width:292px}
+body{margin:0;background:#f4f6f9;font-family:Arial,sans-serif;color:#1f2937}
+.sidebar{position:fixed;inset:0 auto 0 0;width:292px;padding:20px 16px;background:linear-gradient(180deg,#0d2f25 0%,#0a281f 100%);color:#fff;display:flex;flex-direction:column;overflow-y:auto;z-index:1000;box-sizing:border-box}
+.brand{display:flex;align-items:center;gap:12px;padding:3px 10px 22px;border-bottom:1px solid rgba(255,255,255,.09)}
+.brand-logo{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#e4f4ee;color:#14815f;font-size:22px;font-weight:900}.brand-name{font-size:19px;font-weight:850;letter-spacing:.3px}.brand-sub{font-size:11px;color:#98b8ad;margin-top:3px}
+.menu-label{margin:24px 10px 8px;color:#6f978a;font-size:10px;font-weight:800;letter-spacing:1.4px}.sidebar nav{display:flex;flex-direction:column}.menu-item{display:flex!important;align-items:center!important;gap:11px!important;padding:11px 12px;margin-bottom:4px;border-radius:10px;color:#c7dbd4;text-decoration:none;font-size:14px;font-weight:650}.menu-item:hover{background:rgba(255,255,255,.07);color:#fff}.menu-item.active{background:#15543f;color:#fff;box-shadow:inset 3px 0 0 #36b98a}.menu-item .icon{width:19px;min-width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center}.menu-item .icon i,.menu-item .icon svg{width:17px;height:17px;display:block}.menu-item>span:last-child{display:inline-flex;align-items:center;line-height:1;white-space:nowrap}.sidebar-footer{margin-top:auto;padding:18px 10px 2px;color:#89a89f;font-size:10px;line-height:1.55}.footer-title{color:#c2d6cf;font-weight:800;margin-bottom:3px}
+.page-wrapper{margin-left:292px;padding:25px;min-height:100vh;box-sizing:border-box}
+@media(max-width:900px){.sidebar{position:static;width:100%;min-height:auto}.sidebar-footer{display:none}.page-wrapper{margin-left:0;padding:15px}}
+</style><link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+</head>
+
+<body>
+
+<aside class="sidebar">
+<div class="brand"><div class="brand-logo">B</div><div><div class="brand-name">Mollick Krishi Bhandar</div><div class="brand-sub">Management Portal</div></div></div>
+<div class="menu-label">MAIN</div><nav>
+<a href="/dashboard" class="menu-item"><span class="icon"><i data-lucide="layout-dashboard"></i></span><span>Dashboard</span></a>
+<a href="/company" class="menu-item"><span class="icon"><i data-lucide="building-2"></i></span><span>Company Master</span></a>
+<a href="/product" class="menu-item"><span class="icon"><i data-lucide="package"></i></span><span>Product Master</span></a>
+<a href="/customer/" class="menu-item"><span class="icon"><i data-lucide="users"></i></span><span>Customer Master</span></a>
+<a href="/sales-person/" class="menu-item active"><span class="icon"><i data-lucide="user-round-check"></i></span><span>Sales Persons</span></a>
+<a href="/purchase/" class="menu-item"><span class="icon"><i data-lucide="shopping-bag"></i></span><span>Purchase</span></a>
+</nav>
+<div class="menu-label">REPORTS</div><nav>
+<a href="/purchase-report" class="menu-item"><span class="icon"><i data-lucide="shopping-cart"></i></span><span>Purchase Report</span></a>
+<a href="/sale-report" class="menu-item"><span class="icon"><i data-lucide="receipt"></i></span><span>Sale Report</span></a>
+</nav>
+<div class="sidebar-footer"><div class="footer-title">Mollick Krishi Bhandar</div><div>The W.B.S Co-Operative Marketing Federation Ltd.</div></div>
+</aside>
+<div class="container-fluid page-wrapper">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h3>
+                <i class="bi bi-person-badge"></i>
+                Sales Person Master
+            </h3>
+
+            <small>
+                Manage sales persons and targets
+            </small>
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="openAddModal()">
+
+            <i class="bi bi-plus-lg"></i>
+            Add Sales Person
+
+        </button>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="card search-card">
+
+        <div class="card-body">
+
+            <form method="get"
+                  action="/sales-person/"
+                  class="row g-3">
+
+                <div class="col-md-5">
+
+                    <label class="form-label">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        class="form-control"
+                        placeholder="Employee Code / Name / Mobile / Email">
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-select">
+
+                        <option value="">
+                            All
+                        </option>
+
+                        <option value="1"
+                            {% if status == "1" %}selected{% endif %}>
+                            Active
+                        </option>
+
+                        <option value="0"
+                            {% if status == "0" %}selected{% endif %}>
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-4 search-buttons">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-search"></i>
+                        Search
+
+                    </button>
+
+                    <a
+                        href="/sales-person/"
+                        class="btn btn-secondary">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Reset
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="card table-card">
+
+        <div class="card-header">
+
+            <strong>
+                Sales Person List
+            </strong>
+
+            <span class="badge bg-primary">
+                {{ sales_persons|length }}
+            </span>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Employee Code</th>
+
+                        <th>Name</th>
+
+                        <th>Mobile</th>
+
+                        <th>Email</th>
+
+                        <th>Joining Date</th>
+
+                        <th class="text-end">
+                            Daily Target
+                        </th>
+
+                        <th class="text-end">
+                            Monthly Target
+                        </th>
+
+                        <th>Status</th>
+
+                        <th class="text-center">
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for row in sales_persons %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ row.employee_code }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ row.name }}
+                        </td>
+
+                        <td>
+                            {{ row.mobile or '-' }}
+                        </td>
+
+                        <td>
+                            {{ row.email or '-' }}
+                        </td>
+
+                        <td>
+
+                            {% if row.joining_date %}
+
+                                {{ row.joining_date.strftime('%d-%m-%Y') }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-end">
+
+                            {{ "%.2f"|format(row.daily_target or 0) }}
+
+                        </td>
+
+                        <td class="text-end">
+
+                            {{ "%.2f"|format(row.monthly_target or 0) }}
+
+                        </td>
+
+                        <td>
+
+                            {% if row.status == 1 %}
+
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <button
+                                class="btn btn-sm btn-outline-primary"
+                                onclick="editSalesPerson({{ row.id }})">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-sm btn-outline-danger"
+                                onclick="deleteSalesPerson({{ row.id }})">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="text-center no-data">
+
+                            <i class="bi bi-person-x"></i>
+
+                            <br>
+
+                            No Sales Person found.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- ADD / EDIT MODAL -->
+<!-- ================================================= -->
+
+<div
+    class="modal fade"
+    id="salesPersonModal"
+    tabindex="-1">
+
+    <div
+        class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5
+                    class="modal-title"
+                    id="modalTitle">
+
+                    Add Sales Person
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <form id="salesPersonForm">
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        id="person_id">
+
+
+                    <div class="row g-3">
+
+
+                        <!-- Employee Code -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Employee Code
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="employee_code"
+                                name="employee_code"
+                                class="form-control"
+                                maxlength="30"
+                                required>
+
+                        </div>
+
+
+                        <!-- Name -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Name
+                                <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="form-control"
+                                maxlength="100"
+                                required>
+
+                        </div>
+
+
+                        <!-- Mobile -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Mobile
+                            </label>
+
+                            <input
+                                type="text"
+                                id="mobile"
+                                name="mobile"
+                                class="form-control"
+                                maxlength="20">
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                maxlength="100">
+
+                        </div>
+
+
+                        <!-- Joining Date -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Joining Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="joining_date"
+                                name="joining_date"
+                                class="form-control">
+
+                        </div>
+
+
+                        <!-- Status -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Status
+                            </label>
+
+                            <select
+                                id="status"
+                                name="status"
+                                class="form-select">
+
+                                <option value="1">
+                                    Active
+                                </option>
+
+                                <option value="0">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Daily Target -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Daily Target
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="daily_target"
+                                name="daily_target"
+                                class="form-control"
+                                value="0.00">
+
+                        </div>
+
+
+                        <!-- Monthly Target -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Monthly Target
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="monthly_target"
+                                name="monthly_target"
+                                class="form-control"
+                                value="0.00">
+
+                        </div>
+
+
+                        <!-- User -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                User
+                            </label>
+
+                            <select
+                                id="user_id"
+                                name="user_id"
+                                class="form-select">
+
+                                <option value="">
+                                    -- Select User --
+                                </option>
+
+                                {% for user in users %}
+
+                                    <option
+                                        value="{{ user.user_id }}">
+
+                                        {{ user.user_name }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Address -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Address
+                            </label>
+
+                            <textarea
+                                id="address"
+                                name="address"
+                                class="form-control"
+                                rows="3"></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="saveButton">
+
+                        <i class="bi bi-check-lg"></i>
+                        Save
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script
+src="/static/js/sales_person.js">
+</script>
+
+</body>
+
+</html>

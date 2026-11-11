@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ company.comp_name or 'Mollick Krishi Bhandar' }} | Tax Invoice {{ invoice_no }}</title>
+<style>
+@page { size: A4; margin: 12mm; }
+*{box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0;background:#eee;font-size:12px}
+.sheet{width:210mm;min-height:277mm;margin:12px auto;background:#fff;padding:10mm;position:relative}
+.company{text-align:center;border-bottom:2px solid #111;padding-bottom:8px}
+.company h1{font-size:22px;margin:0 0 3px;text-transform:uppercase}
+.company .sub{font-size:12px;line-height:1.45}
+.title{text-align:center;font-size:17px;font-weight:700;margin:10px 0;text-transform:uppercase}
+.meta{display:grid;grid-template-columns:1fr 1fr;border:1px solid #222}
+.meta .box{padding:7px;border-bottom:1px solid #222;min-height:55px}
+.meta .box:nth-child(odd){border-right:1px solid #222}
+.meta .label{font-size:10px;color:#555;text-transform:uppercase;font-weight:bold}
+.meta .value{font-size:12px;font-weight:600;margin-top:3px}
+table{width:100%;border-collapse:collapse}
+.items{margin-top:10px}
+.items th,.items td{border:1px solid #222;padding:5px 4px}
+.items th{background:#eee;text-align:center;font-size:10px;text-transform:uppercase}
+.items td{font-size:10.5px;vertical-align:top}
+.num{text-align:right;white-space:nowrap}
+.center{text-align:center}
+.summary{margin-top:0;width:45%;margin-left:auto}
+.summary td{border:1px solid #222;padding:5px}
+.summary .label{font-weight:bold}
+.grand td{font-size:13px;font-weight:bold}
+.amount-words{border:1px solid #222;border-top:0;padding:7px;font-weight:bold}
+.foot{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px}
+.terms{border:1px solid #222;padding:8px;min-height:85px}
+.sign{text-align:right;padding-top:48px;font-weight:bold}
+.sign span{display:inline-block;border-top:1px solid #222;padding-top:5px;min-width:150px;text-align:center}
+.actions{position:fixed;top:15px;right:15px;z-index:10}
+.actions button,.actions a{border:0;background:#111;color:#fff;padding:9px 14px;border-radius:4px;text-decoration:none;cursor:pointer;margin-left:5px}
+@media print{body{background:#fff}.sheet{margin:0;width:auto;min-height:auto;padding:0}.actions{display:none}}
+</style>
+</head>
+<body>
+<div class="actions"><button onclick="window.print()">🖨 Print</button><a href="/sale/invoices">Back</a>
+<a href="/receipts/" class="menu-item"><span class="menu-icon"><i data-lucide="hand-coins"></i></span><span>Money Received</span></a></div>
+<div class="sheet">
+  <div class="company">
+    <h1>{{  'Mollick Krishi Bhandar' }}</h1>
+    {% if company.short_name %}
+    <div>
+      <strong>{{ '''' }}</strong>
+    </div>
+    {% endif %}
+    <div class="sub">{{ company.comp_add or '' }}</div>
+    {% if company.comp_pn_no %}<div class="sub">Phone: {{ company.comp_pn_no }}{% if company.comp_email_id %} &nbsp; | &nbsp; Email: {{ company.comp_email_id }}{% endif %}</div>{% endif %}
+    {% if company.gst_no or company.pan_no or company.cin %}<div class="sub">{% if company.gst_no %}GSTIN: {{ company.gst_no }}{% endif %}{% if company.pan_no %} &nbsp; | &nbsp; PAN: {{ company.pan_no }}{% endif %}{% if company.cin %} &nbsp; | &nbsp; CIN: {{ company.cin }}{% endif %}</div>{% endif %}
+  </div>
+  <div class="title">Tax Invoice / Sales Invoice</div>
+  <div class="meta">
+    <div class="box"><div class="label">Invoice No.</div><div class="value">{{ invoice_no }}</div></div>
+    <div class="box"><div class="label">Invoice Date</div><div class="value">{{ lines[0].sale_date }}</div></div>
+    <div class="box"><div class="label">Customer</div><div class="value">{{ lines[0].customer_code }}{% if lines[0].customer_name %} - {{ lines[0].customer_name }}{% endif %}</div></div>
+    <div class="box"><div class="label">Sales Person</div><div class="value">{{ lines[0].sales_person_code }}{% if lines[0].sales_person_name %} - {{ lines[0].sales_person_name }}{% endif %}</div></div>
+    <div class="box"><div class="label">Credit Days</div><div class="value">{{ lines[0].credit_days }}</div></div>
+    <div class="box"><div class="label">Due Date</div><div class="value">{{ lines[0].due_date or '' }}</div></div>
+  </div>
+  <table class="items">
+    <thead><tr><th>#</th><th>RO</th><th>Product / Description</th><th>HSN</th><th>Batch</th><th>Qty</th><th>Rate</th><th>Discount</th><th>GST %</th><th>GST Amt</th><th>Amount</th></tr></thead>
+    <tbody>
+    {% for x in lines %}
+      <tr>
+        <td class="center">{{ loop.index }}</td><td class="center">{{ x.ro }}</td>
+        <td><strong>{{ x.product_id }}</strong> - {{ x.product_name }}</td>
+        <td class="center">{{ x.hsn_code }}</td><td class="center">{{ x.batch_id }}</td>
+        <td class="num">{{ '%.3f'|format(x.qty|float) }}{% if x.product_unit %}<br><small>{{ x.product_unit }}</small>{% endif %}</td>
+        <td class="num">{{ '%.2f'|format(x.selling_price|float) }}</td>
+        <td class="num">{{ '%.2f'|format(x.discount|float) }}</td>
+        <td class="num">{{ '%.2f'|format(x.gst_rate|float) }}</td>
+        <td class="num">{{ '%.2f'|format(x.gst_amount|float) }}</td>
+        <td class="num"><strong>{{ '%.2f'|format(x.line_total|float) }}</strong></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <table class="summary">
+    <tr><td class="label">Gross Amount</td><td class="num">{{ '%.2f'|format(gross|float) }}</td></tr>
+    <tr><td class="label">Discount</td><td class="num">{{ '%.2f'|format(discount|float) }}</td></tr>
+    <tr><td class="label">GST</td><td class="num">{{ '%.2f'|format(gst|float) }}</td></tr>
+    <tr class="grand"><td>Net Invoice Amount</td><td class="num">{{ '%.2f'|format(net|float) }}</td></tr>
+    <tr><td class="label">Received</td><td class="num">{{ '%.2f'|format(received|float) }}</td></tr>
+    <tr><td class="label">Outstanding</td><td class="num">{{ '%.2f'|format(outstanding|float) }}</td></tr>
+  </table>
+  <div class="amount-words">
+    <div>Amount Payable: ₹ {{ '%.2f'|format(net|float) }}</div>
+    <div style="margin-top:5px;">Amount in Words: {{ total_amount_words }}</div>
+  </div>
+  <div class="foot">
+    <div class="terms"><strong>Terms & Conditions</strong><br>1. Goods once sold are subject to the applicable sale terms.<br>2. Payment is due as per the credit period shown above.<br>3. Please verify quantity, batch and invoice details at the time of delivery.<br>4. This is a computer-generated invoice.</div>
+    <div class="sign">For {{  'Mollick Krishi Bhandar' }}<br><br><br><span>Authorised Signatory</span></div>
+  </div>
+</div>
+</body>
+</html>

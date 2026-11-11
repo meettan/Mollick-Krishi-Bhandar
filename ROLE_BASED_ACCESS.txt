@@ -1,0 +1,17 @@
+ROLE-BASED MENU ACCESS
+======================
+
+Supported user types:
+- ADMIN: full access to all pages, including Create User and User Management.
+- AGENT: Dashboard, Sales, Sales Invoices, Money Received, Sale Report, Stock Report, My Profile.
+- OPERATOR: Dashboard, all Masters, Purchase, Sales, Sales Invoices, Money Received, and all reports, plus My Profile.
+- USER: Dashboard and My Profile only.
+
+Menu visibility is controlled in templates/sidebar.html. Server-side path access is also checked in app/main.py, so hiding a menu item is not the only security check.
+
+To create a user, sign in as ADMIN and open Administration > Create User. Select the required User Type.
+
+Notes:
+- Existing database users keep their current user_type. Update an existing account if you want to assign AGENT or OPERATOR.
+- Existing ADMIN and USER accounts remain valid.
+- Test permissions in a development environment before deploying to production.

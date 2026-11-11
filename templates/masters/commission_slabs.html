@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commission Slabs Master</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/dashboard.css?v=11"><link rel="stylesheet" href="/static/sidebar_common.css?v=23">
+<style>
+:root{--green:#126b4d;--ink:#18352b}body{background:#f4f7f6;color:#20332c;font-family:Arial,sans-serif}.page-wrapper{margin-left:260px;padding:28px;min-height:100vh}.page-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.page-heading h1{font-size:26px;font-weight:800;margin:0;color:#18392d}.subheading{color:#73837b;font-size:13px;margin-top:6px}.panel{background:#fff;border:1px solid #e4ebe7;border-radius:15px;box-shadow:0 5px 18px #153b2a0a;margin-bottom:20px;overflow:hidden}.panel-head{padding:18px 22px;border-bottom:1px solid #edf1ef;font-weight:750}.panel-body{padding:22px}.form-label{font-size:13px;font-weight:700;color:#43584e}.form-control,.form-select{min-height:43px;border-color:#dce5e0;border-radius:9px}.btn-green{background:var(--green);color:#fff;border:0;border-radius:9px;padding:10px 18px;font-weight:700}.btn-green:hover{background:#0c563d;color:#fff}.table thead th{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#73837b;background:#f7faf8;border-bottom:1px solid #e6ece8;padding:14px;white-space:nowrap}.table tbody td{padding:14px;vertical-align:middle}.status-pill{display:inline-block;padding:5px 10px;border-radius:30px;font-size:11px;font-weight:800}.active-pill{background:#e4f6ed;color:#15764e}.inactive-pill{background:#f0f1f2;color:#66716c}.empty-state{text-align:center;padding:42px;color:#829087}.table-responsive{overflow-x:auto}.actions{display:flex;gap:7px}.btn-sm{border-radius:7px}@media(max-width:900px){.page-wrapper{margin-left:0;padding:16px}.page-heading{align-items:flex-start;flex-direction:column}}
+</style></head>
+<body>
+{% include 'sidebar.html' %}
+<main class="page-wrapper">
+  <div class="page-heading"><div><h1>Commission Slabs Master</h1><div class="subheading">Configure commission percentages by number of days and effective date.</div></div><span class="badge text-bg-light border px-3 py-2">{{ slabs|length }} record(s)</span></div>
+  {% if message %}<div class="alert alert-info alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+  <section class="panel"><div class="panel-head">{{ 'Edit Commission Slab' if edit_row else 'Add Commission Slab' }}</div><div class="panel-body">
+    <form method="post" action="/commission-slabs/save" class="row g-3">
+      <input type="hidden" name="id" value="{{ edit_row.id if edit_row else 0 }}">
+      <div class="col-md-3"><label class="form-label">Effective Date *</label><input class="form-control" type="date" name="effective_dt" required value="{{ edit_row.effective_dt.isoformat() if edit_row else today }}"></div>
+      <div class="col-md-2"><label class="form-label">From Days *</label><input class="form-control" type="number" name="from_days" min="0" required value="{{ edit_row.from_days if edit_row else '' }}" placeholder="e.g. 0"></div>
+      <div class="col-md-2"><label class="form-label">To Days *</label><input class="form-control" type="number" name="to_days" min="0" required value="{{ edit_row.to_days if edit_row else '' }}" placeholder="e.g. 30"></div>
+      <div class="col-md-2"><label class="form-label">Commission (%) *</label><input class="form-control" type="number" name="commission_percentage" min="0" max="100" step="0.01" required value="{{ edit_row.commission_percentage if edit_row else '' }}" placeholder="e.g. 2.50"></div>
+      <div class="col-md-2"><label class="form-label">Status</label><select class="form-select" name="status"><option value="A" {% if not edit_row or edit_row.status == 'A' %}selected{% endif %}>Active</option><option value="I" {% if edit_row and edit_row.status == 'I' %}selected{% endif %}>Inactive</option></select></div>
+      <div class="col-md-1 d-flex align-items-end"><button class="btn btn-green w-100" type="submit" title="Save"><i class="bi bi-check-lg"></i> Save</button></div>
+      {% if edit_row %}<div class="col-12"><a href="/commission-slabs/" class="btn btn-outline-secondary btn-sm">Cancel edit</a></div>{% endif %}
+    </form>
+  </div></section>
+  <section class="panel"><div class="panel-head d-flex justify-content-between align-items-center flex-wrap gap-3"><span>Commission Slab Records</span><form class="d-flex gap-2" method="get" action="/commission-slabs/"><input class="form-control" style="max-width:150px" name="search" value="{{ search }}" placeholder="Search ID"><select class="form-select" name="status" style="min-width:135px"><option value="">All statuses</option><option value="A" {% if status_filter == 'A' %}selected{% endif %}>Active</option><option value="I" {% if status_filter == 'I' %}selected{% endif %}>Inactive</option></select><button class="btn btn-outline-success" type="submit">Filter</button><a class="btn btn-outline-secondary" href="/commission-slabs/">Reset</a></form></div>
+    <div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Effective Date</th><th>From Days</th><th>To Days</th><th>Commission</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+    {% for slab in slabs %}<tr><td class="fw-bold">{{ slab.id }}</td><td>{{ slab.effective_dt.strftime('%d-%b-%Y') if slab.effective_dt else '' }}</td><td>{{ slab.from_days }}</td><td>{{ slab.to_days }}</td><td class="fw-bold">{{ '%.2f'|format(slab.commission_percentage|float) }}%</td><td><span class="status-pill {{ 'active-pill' if slab.status == 'A' else 'inactive-pill' }}">{{ 'ACTIVE' if slab.status == 'A' else 'INACTIVE' }}</span></td><td><div class="actions"><a class="btn btn-sm btn-outline-primary" href="/commission-slabs/?edit_id={{ slab.id }}">Edit</a><form method="post" action="/commission-slabs/toggle/{{ slab.id }}" onsubmit="return confirm('Change this slab status?')"><button class="btn btn-sm btn-outline-secondary" type="submit">{{ 'Deactivate' if slab.status == 'A' else 'Activate' }}</button></form></div></td></tr>
+    {% else %}<tr><td colspan="7"><div class="empty-state"><div class="fs-5 fw-bold mb-1">No commission slabs found</div><div>Add a slab using the form above.</div></div></td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+</main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script>if(window.lucide){window.lucide.createIcons();}</script>
+</body></html>

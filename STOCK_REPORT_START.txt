@@ -1,0 +1,23 @@
+STOCK REPORT START / FIX
+========================
+
+The Stock Report route is:
+  http://127.0.0.1:8080/stock-report
+
+IMPORTANT: After replacing the project files, STOP the old FastAPI process and START this project again.
+
+Windows:
+1. Close the old FastAPI/uvicorn command window, or press Ctrl+C in it.
+2. Open Command Prompt in this project folder.
+3. Run:
+   run_8080.bat
+
+Or run:
+   python -m uvicorn app.main:app --host 127.0.0.1 --port 8080
+
+If port 8080 is already in use by the old process, stop that old process first.
+
+Stock Report also has:
+  /stock-report/export
+
+The sidebar contains Stock Report and the report uses the same common sidebar styling.

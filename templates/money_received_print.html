@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Money Received - {{ r.recovery_no }}</title>
+<style>
+@page { size: A4; margin: 14mm; }
+body { font-family: Arial, sans-serif; color:#111; font-size:13px; margin:0; }
+.receipt { width:100%; max-width:780px; margin:0 auto; border:1px solid #222; }
+.header { text-align:center; padding:18px 18px 10px; border-bottom:2px solid #222; }
+.company { font-size:24px; font-weight:700; letter-spacing:.5px; }
+.title { font-size:19px; font-weight:700; margin-top:8px; text-transform:uppercase; }
+.sub { margin-top:4px; color:#555; }
+.grid { display:grid; grid-template-columns:1fr 1fr; }
+.box { padding:12px 15px; border-bottom:1px solid #aaa; }
+.box:nth-child(odd) { border-right:1px solid #aaa; }
+.label { color:#666; font-size:11px; text-transform:uppercase; margin-bottom:4px; }
+.value { font-size:14px; font-weight:600; }
+.amount { margin:20px 15px; border:2px solid #222; padding:15px; text-align:center; }
+.amount .label { color:#222; }
+.amount .value { font-size:25px; }
+table { width:calc(100% - 30px); margin:0 15px 20px; border-collapse:collapse; }
+th,td { border:1px solid #888; padding:9px; }
+th { background:#eee; text-align:left; }
+.footer { display:flex; justify-content:space-between; padding:35px 15px 15px; }
+.sign { width:220px; text-align:center; border-top:1px solid #222; padding-top:7px; }
+.actions { text-align:center; margin:15px; }
+button { padding:9px 22px; cursor:pointer; }
+@media print { .actions { display:none; } }
+</style>
+</head>
+<body>
+<div class="receipt">
+  <div class="header">
+    <div class="company">Mollick Krishi Bhandar</div>
+    <div class="title">Money Receipt</div>
+    <div class="sub">Customer Payment Receipt</div>
+  </div>
+
+  <div class="grid">
+    <div class="box"><div class="label">Receipt No.</div><div class="value">{{ r.recovery_no }}</div></div>
+    <div class="box"><div class="label">Receipt Date</div><div class="value">{{ r.recovery_date }}</div></div>
+    <div class="box"><div class="label">Sales Invoice No.</div><div class="value">{{ r.sale_invoiceno }}</div></div>
+    <div class="box"><div class="label">Payment Mode</div><div class="value">{{ r.payment_mode }}</div></div>
+    <div class="box"><div class="label">Customer</div><div class="value">{{ r.customer_code }} - {{ r.customer_name }}</div></div>
+    <div class="box"><div class="label">Sales Person</div><div class="value">{{ r.sales_person_code }} - {{ r.sales_person_name }}</div></div>
+  </div>
+
+  <div class="amount">
+    <div class="label">Amount Received</div>
+    <div class="value">₹ {{ '%.2f'|format(r.recovered_amount|float) }}</div>
+    <div style="margin-top:8px;font-weight:600;">Amount in Words: {{ r.amount_in_words }}</div>
+  </div>
+
+  <table>
+    <tr><th style="width:35%">Particular</th><th>Details</th></tr>
+    <tr><td>Invoice Amount</td><td>₹ {{ '%.2f'|format(r.invoice_amount|float) }}</td></tr>
+    <tr><td>This Receipt</td><td>₹ {{ '%.2f'|format(r.recovered_amount|float) }}</td></tr>
+    <tr><td>Total Received Against Invoice</td><td>₹ {{ '%.2f'|format(r.total_received|float) }}</td></tr>
+    <tr><td>Balance Outstanding</td><td><strong>₹ {{ '%.2f'|format(r.balance_after|float) }}</strong></td></tr>
+    <tr><td>Reference No.</td><td>{{ r.reference_no or '-' }}</td></tr>
+    <tr><td>Remarks</td><td>{{ r.remarks or '-' }}</td></tr>
+  </table>
+
+  <div class="footer">
+    <div class="sign">Customer / Representative</div>
+    <div class="sign">Authorised Signatory</div>
+  </div>
+</div>
+<div class="actions"><button onclick="window.print()">Print Receipt</button></div>
+</body>
+</html>
